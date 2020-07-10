@@ -18,16 +18,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+
             android:id="@+id/type_Image"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_fridge_foreground" />
 
         <TextView
-            app:layout_constraintStart_toEndOf="@+id/type_Image"
+         app:layout_constraintStart_toEndOf="@id/type_Image"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_gravity="start"
+            android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/product_name_textView"
@@ -35,10 +35,31 @@
             android:hint="Product name"
             android:textSize="18dp"
             />
+        <TextView
+            app:layout_constraintStart_toEndOf="@id/type_Image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/quanitytextview"
+            android:textSize="14dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Quanity: "/>
+        <TextView
+    app:layout_constraintStart_toEndOf="@id/quanitytextview"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/product_quanity_textView"
+            android:textStyle="bold"
+            android:hint="Qua"
+            android:textSize="14dp"
+            />
 
         <TextView
+           app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/daysLeft_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

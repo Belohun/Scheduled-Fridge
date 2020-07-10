@@ -10,10 +10,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
-import kotlinx.android.synthetic.main.product_layout.view.*
+import org.joda.time.Days
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.time.temporal.Temporal
 import java.util.*
 
 class listOfproductsAdapter internal constructor(context: Context?, products: List<Product>): RecyclerView.Adapter<listOfproductsAdapter.ViewHolder>() {
@@ -23,6 +24,7 @@ class listOfproductsAdapter internal constructor(context: Context?, products: Li
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val productName = itemView.findViewById<TextView>(R.id.product_name_textView)
         val daysLeft = itemView.findViewById<TextView>(R.id.daysLeft_textView)
+        val quanity = itemView.findViewById<TextView>(R.id.product_quanity_textView)
 
     }
 
@@ -39,12 +41,13 @@ class listOfproductsAdapter internal constructor(context: Context?, products: Li
     @SuppressLint("NewApi")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val current = products[position]
+        var formatter = DateTimeFormatter.ofPattern("d/M/yyyy")
         val today= LocalDate.now()
-      /*  val expirationDay = current.productExpirationDate as Temporal
-        val daysBetween = ChronoUnit.DAYS.between(today,expirationDay)*/
-
+        val toDate = LocalDate.parse(current.productExpirationDate,formatter)
+        val daysBetween = ChronoUnit.DAYS.between(today,toDate)
         holder.productName.text = current.productName
-        holder.daysLeft.text  = "7 days"
+        holder.daysLeft.text  = "$daysBetween days"
+        holder.quanity.text = current.quantity.toString()
     }
 
 }
