@@ -13,6 +13,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -34,31 +36,27 @@ class HomeFragment : Fragment() {
     ): View? {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        val productName: TextView = root.findViewById(R.id.product_name_textView)
-        val productGroup: TextView = root.findViewById(R.id.product_group_textView)
-        val productValidity: TextView = root.findViewById(R.id.validity_textView)
+
         var _allProducts : List<Product> = emptyList()
+        val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerView_home)
         homeViewModel.allProducts.observe(viewLifecycleOwner, Observer {
             Log.d("products",it.toString())
             _allProducts= it
+            val adapter = listOfproductsAdapter(context,_allProducts)
+            recyclerView.adapter = adapter
         })
-        homeViewModel.productName.observe(viewLifecycleOwner, Observer {
-            productName.text = it
-        })
-        homeViewModel.productGroup.observe(viewLifecycleOwner, Observer {
-            productGroup.text = it
-        })
-        homeViewModel.productValidity.observe(viewLifecycleOwner, Observer {
-            productValidity.text = it
-        })
+
+
+        recyclerView.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
+
+
         val fab: FloatingActionButton = root.findViewById(R.id.fab)
         fab.setOnClickListener {
             val dialogView = LayoutInflater.from(this.activity).inflate(R.layout.add_product_layout,null)
             val mBuilder = AlertDialog.Builder(this.activity!!)
                 .setView(dialogView)
             val mAlertDialog = mBuilder.show()
-            val typesOfFood = arrayOf("Item 1", "Item 2", "Item 3", "Item 4")
-            val adapter: ArrayAdapter<String> = ArrayAdapter<String>(context!!, R.layout.support_simple_spinner_dropdown_item,typesOfFood)
+            val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(context!!,R.array.types,R.layout.support_simple_spinner_dropdown_item)
             mAlertDialog.type_AutoCompliteTextView.setAdapter(adapter)
 
 
