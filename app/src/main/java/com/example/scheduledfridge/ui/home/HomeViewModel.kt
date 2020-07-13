@@ -21,6 +21,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             repository.insert(product)
         }
     }
+    fun delete(product: Product){
+        viewModelScope.launch {
+            repository.delete(product)
+        }
+    }
     fun getLowestPossibleId(product: List<Product>): Int {
         var i = 0
         while(product.size > i){

@@ -6,7 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
@@ -16,12 +18,15 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
+import kotlin.coroutines.coroutineContext
 
 class listOfproductsAdapter internal constructor(context: Context?, products: List<Product>): RecyclerView.Adapter<listOfproductsAdapter.ViewHolder>() {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     val products = products
+    val context = context
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+
         val productName = itemView.findViewById<TextView>(R.id.product_name_textView)
         val daysLeft = itemView.findViewById<TextView>(R.id.daysLeft_textView)
         val quanity = itemView.findViewById<TextView>(R.id.product_quanity_textView)
@@ -34,12 +39,12 @@ class listOfproductsAdapter internal constructor(context: Context?, products: Li
     }
 
     override fun getItemCount(): Int {
-        Log.d("itemCount", products.size.toString())
         return products.size
     }
 
     @SuppressLint("NewApi")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.itemView.animation = AnimationUtils.loadAnimation(context,R.anim.fade_scale)
         val current = products[position]
         var formatter = DateTimeFormatter.ofPattern("d/M/yyyy")
         val today= LocalDate.now()

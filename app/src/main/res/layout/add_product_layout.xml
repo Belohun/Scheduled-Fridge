@@ -132,7 +132,7 @@
             android:hint="Quanity ">
 
             <com.google.android.material.textfield.TextInputEditText
-android:id="@+id/quanity_TextInputEditText"
+                android:id="@+id/quanity_TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
