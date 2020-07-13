@@ -2,6 +2,7 @@ package com.example.scheduledfridge.ui.home
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.marginLeft
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
@@ -52,7 +54,21 @@ class listOfproductsAdapter internal constructor(context: Context?, products: Li
         val toDate = LocalDate.parse(current.productExpirationDate,formatter)
         val daysBetween = ChronoUnit.DAYS.between(today,toDate)
         holder.productName.text = current.productName
-        holder.daysLeft.text  = "$daysBetween days"
+        if(daysBetween<=0){
+            holder.daysLeft.text="Expired"
+            holder.daysLeft.setTextColor(ContextCompat.getColor(context!!,R.color.colorExpired))
+
+        }else if(daysBetween==null){
+           holder.daysLeft.text=""
+        }else{
+            if(daysBetween<=3){
+                holder.daysLeft.setTextColor(ContextCompat.getColor(context!!,R.color.colorGoingToExpire))
+            }else{
+                holder.daysLeft.setTextColor(ContextCompat.getColor(context!!,R.color.colorFresh))
+            }
+            holder.daysLeft.text  = "$daysBetween days"
+        }
+
         holder.quanity.text = current.quantity.toString()
     }
 

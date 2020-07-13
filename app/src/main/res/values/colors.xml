@@ -5,5 +5,7 @@
     <color name="colorAccent">#2196f3</color>
     <color name="background">#ffffff</color>
     <color name="colorFresh">#00b93a</color>
+    <color name="colorGoingToExpire">#D38601</color>
+    <color name="colorExpired">#B90000</color>
 
 </resources>
