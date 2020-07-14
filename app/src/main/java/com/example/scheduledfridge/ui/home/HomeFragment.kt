@@ -203,11 +203,9 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         adapter!!.setProducts(filteredNewsList)
         return true
     }
-
     override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
         TODO("Not yet implemented")
     }
-
     override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
         adapter!!.setProducts(_allProducts)
         return true

@@ -5,4 +5,7 @@
         android:endColor="@color/background"
         android:startColor="@color/colorAccent"
         android:type="linear" />
+    <corners
+        android:topRightRadius="20dp"
+        />
 </shape>

@@ -109,11 +109,5 @@ class listOfproductsAdapter internal constructor(context: Context?): RecyclerVie
     internal fun setProducts(products: List<Product>){
         this.products = products
         notifyDataSetChanged()
-
-
     }
-
-
-
-
 }
