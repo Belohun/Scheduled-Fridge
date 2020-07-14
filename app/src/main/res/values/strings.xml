@@ -12,13 +12,14 @@
     <string name="menu_history">History</string>Produkty pochodzenia zwierzęcego
     <string name="menu_statistics">Statistics</string>
     <string-array name="types">
-        <item>Vegetables</item>
-        <item>Fruits</item>
-        <item>Sweets</item>
-        <item>Animal origin</item>
-        <item>Grain products</item>
-        <item>Spices</item>
-        <item>Others</item>
+        <item>Vegetables</item>//
+        <item>Fruits</item>//
+        <item>Sweets</item>//
+        <item>Animal origin</item>//
+        <item>Grain products</item>//
+        <item>Drinks</item>//
+        <item>Spices</item>//
+        <item>Others</item>//
 
     </string-array>
 

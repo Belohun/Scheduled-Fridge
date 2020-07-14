@@ -21,19 +21,20 @@
         android:background="@drawable/product_background"
         android:elevation="5dp">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-
             android:id="@+id/type_Image"
             android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_fridge_foreground" />
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_animal_origin" />
 
         <TextView
          app:layout_constraintStart_toEndOf="@id/type_Image"
             app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,7 +51,7 @@
             style="@style/TextAppearance.MdcTypographyStyles.Subtitle3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:layout_marginLeft="8dp"
             android:layout_marginBottom="8dp"
             android:text="Quanity: "
             app:layout_constraintBottom_toBottomOf="parent"
@@ -76,7 +77,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             style="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
-            android:hint="days left"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
             android:textColor="@color/colorFresh"

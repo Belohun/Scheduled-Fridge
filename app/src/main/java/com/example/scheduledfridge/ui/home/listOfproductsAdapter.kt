@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -33,6 +34,7 @@ class listOfproductsAdapter internal constructor(context: Context?, products: Li
         val productName = itemView.findViewById<TextView>(R.id.product_name_textView)
         val daysLeft = itemView.findViewById<TextView>(R.id.daysLeft_textView)
         val quanity = itemView.findViewById<TextView>(R.id.product_quanity_textView)
+        val icon = itemView.findViewById<ImageView>(R.id.type_Image)
 
     }
 
@@ -51,25 +53,57 @@ class listOfproductsAdapter internal constructor(context: Context?, products: Li
         val current = products[position]
         var formatter = DateTimeFormatter.ofPattern("d/M/yyyy")
         val today= LocalDate.now()
-        val toDate = LocalDate.parse(current.productExpirationDate,formatter)
-        val daysBetween = ChronoUnit.DAYS.between(today,toDate)
-        holder.productName.text = current.productName
-        if(daysBetween<=0){
-            holder.daysLeft.text="Expired"
-            holder.daysLeft.setTextColor(ContextCompat.getColor(context!!,R.color.colorExpired))
-
-        }else if(daysBetween==null){
-           holder.daysLeft.text=""
+        val daysBetween: Long
+        if(current.productExpirationDate==""){
+                holder.daysLeft.text=""
         }else{
-            if(daysBetween<=3){
-                holder.daysLeft.setTextColor(ContextCompat.getColor(context!!,R.color.colorGoingToExpire))
-            }else{
-                holder.daysLeft.setTextColor(ContextCompat.getColor(context!!,R.color.colorFresh))
+            val toDate = LocalDate.parse(current.productExpirationDate,formatter)
+            daysBetween = ChronoUnit.DAYS.between(today,toDate)
+            if(daysBetween<=0){
+                holder.daysLeft.text="Expired"
+                holder.daysLeft.setTextColor(ContextCompat.getColor(context!!,R.color.colorExpired))
+
+            }else  {
+                if(daysBetween<=3){
+                    holder.daysLeft.setTextColor(ContextCompat.getColor(context!!,R.color.colorGoingToExpire))
+                }else{
+                    holder.daysLeft.setTextColor(ContextCompat.getColor(context!!,R.color.colorFresh))
+                }
+                holder.daysLeft.text  = "$daysBetween days"
             }
-            holder.daysLeft.text  = "$daysBetween days"
         }
+        holder.productName.text = current.productName
+
 
         holder.quanity.text = current.quantity.toString()
+    when(current.productType){
+        "Vegetables"->{
+            holder.icon.setImageDrawable(ContextCompat.getDrawable(context!!,R.drawable.ic_vegetables))
+        }
+        "Fruits"->{
+            holder.icon.setImageDrawable(ContextCompat.getDrawable(context!!,R.drawable.ic_fruits))
+        }
+        "Sweets"->{
+            holder.icon.setImageDrawable(ContextCompat.getDrawable(context!!,R.drawable.ic_sweets))
+        }
+        "Animal origin"->{
+            holder.icon.setImageDrawable(ContextCompat.getDrawable(context!!,R.drawable.ic_animal_origin))
+        }
+        "Grain products"->{
+            holder.icon.setImageDrawable(ContextCompat.getDrawable(context!!,R.drawable.ic_grain_products))
+        }
+        "Drinks"->{
+            holder.icon.setImageDrawable(ContextCompat.getDrawable(context!!,R.drawable.ic_drinks))
+        }
+        "Spices"->{
+            holder.icon.setImageDrawable(ContextCompat.getDrawable(context!!,R.drawable.ic_spices))
+        }
+
+        "Others"->{
+            holder.icon.setImageDrawable(ContextCompat.getDrawable(context!!,R.drawable.ic_others))
+        }
     }
+    }
+
 
 }
