@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -22,11 +24,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.coroutines.coroutineContext
 
-class listOfproductsAdapter internal constructor(context: Context?, products: List<Product>): RecyclerView.Adapter<listOfproductsAdapter.ViewHolder>() {
+class listOfproductsAdapter internal constructor(context: Context?): RecyclerView.Adapter<listOfproductsAdapter.ViewHolder>() {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    val products = products
+    var products = emptyList<Product>()
     val context = context
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -98,12 +101,19 @@ class listOfproductsAdapter internal constructor(context: Context?, products: Li
         "Spices"->{
             holder.icon.setImageDrawable(ContextCompat.getDrawable(context!!,R.drawable.ic_spices))
         }
-
         "Others"->{
             holder.icon.setImageDrawable(ContextCompat.getDrawable(context!!,R.drawable.ic_others))
         }
     }
     }
+    internal fun setProducts(products: List<Product>){
+        this.products = products
+        notifyDataSetChanged()
+
+
+    }
+
+
 
 
 }

@@ -4,15 +4,10 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.graphics.Canvas
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
@@ -28,9 +23,12 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
+    androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
     private lateinit var homeViewModel: HomeViewModel
+    var adapter: listOfproductsAdapter? = null
+    var _allProducts : List<Product> = emptyList()
 
     @SuppressLint("NewApi")
     override fun onCreateView(
@@ -40,15 +38,18 @@ class HomeFragment : Fragment() {
     ): View? {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
+        setHasOptionsMenu(true)
 
-        var _allProducts : List<Product> = emptyList()
+
 
         val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerView_home)
-        homeViewModel.allProducts.observe(viewLifecycleOwner, Observer {
-            Log.d("products",it.toString())
-            _allProducts= it
-            val adapter = listOfproductsAdapter(context,_allProducts)
-            setAdapter(recyclerView,adapter)
+
+
+         adapter = listOfproductsAdapter(context)
+        setAdapter(recyclerView, adapter!!)
+        homeViewModel.allProducts.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            _allProducts=it
+            adapter!!.setProducts(_allProducts)
         })
 
 
@@ -165,12 +166,50 @@ class HomeFragment : Fragment() {
         }
         return root
     }
-    fun setAdapter(
+    private fun setAdapter(
         recyclerView: RecyclerView,
         adapter: listOfproductsAdapter
     ){
 
         recyclerView.adapter = adapter
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main, menu)
+        val searchView: androidx.appcompat.widget.SearchView = menu.findItem(R.id.action_search).actionView as androidx.appcompat.widget.SearchView
+        searchView.setOnQueryTextListener(this)
+        super.onCreateOptionsMenu(menu, inflater)
+
+    }
+    override fun onQueryTextSubmit(p0: String?): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun onQueryTextChange(p0: String?): Boolean {
+    if(p0 == null || p0.trim().isEmpty()){
+        adapter!!.setProducts(_allProducts)
+        return false
+    }
+        var newText = p0.toLowerCase()
+        val filteredNewsList: ArrayList<Product> = ArrayList()
+        _allProducts.forEach{
+            val name = it.productName.toLowerCase()
+            val type = it.productType.toLowerCase()
+            if(name.contains(newText) or type.contains(newText) or it.quantity.toString().contains(newText)){
+                filteredNewsList.add(Product(it.id,it.productName,it.productType,it.productExpirationDate,it.productAdedDate,it.quantity))
+            }
+        }
+        adapter!!.setProducts(filteredNewsList)
+        return true
+    }
+
+    override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
+        adapter!!.setProducts(_allProducts)
+        return true
     }
 }
