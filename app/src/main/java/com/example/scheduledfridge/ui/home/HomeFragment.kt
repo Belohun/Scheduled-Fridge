@@ -179,6 +179,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         inflater.inflate(R.menu.main, menu)
         val searchView: androidx.appcompat.widget.SearchView = menu.findItem(R.id.action_search).actionView as androidx.appcompat.widget.SearchView
         searchView.setOnQueryTextListener(this)
+        searchView.queryHint = "Search..."
         super.onCreateOptionsMenu(menu, inflater)
 
     }
