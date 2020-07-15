@@ -40,17 +40,4 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    private val _productName = MutableLiveData<String>().apply {
-        value = "Apple"
-    }
-    private val _productGroup = MutableLiveData<String>().apply {
-        value = "Fruits"
-    }
-    private val _productValidity= MutableLiveData<String>().apply {
-        value = "7 days left"
-    }
-    val productName: LiveData<String> = _productName
-    val productGroup: LiveData<String> = _productGroup
-    val productValidity: LiveData<String> = _productValidity
-
 }

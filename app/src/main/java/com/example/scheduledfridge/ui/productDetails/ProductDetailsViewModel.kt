@@ -9,14 +9,11 @@ import com.example.scheduledfridge.database.Product
 import kotlinx.coroutines.launch
 
 class ProductDetailsViewModel(application: Application):AndroidViewModel(application) {
-    private var _product = MutableLiveData<Product>()
-
-
+  val currentProduct = MutableLiveData<Product>()
     fun setCurrentProduct(product: Product){
-        viewModelScope.launch {
-            _product.value = product
-        }
+        currentProduct.value = product
+
     }
 
-    val currentProduct: LiveData<Product> =_product
+
 }

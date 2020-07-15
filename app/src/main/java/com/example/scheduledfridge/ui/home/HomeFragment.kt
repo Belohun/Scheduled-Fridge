@@ -4,10 +4,13 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
@@ -15,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
+import com.example.scheduledfridge.ui.productDetails.ProductDetailsViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.add_product_layout.*
@@ -27,6 +31,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
     private lateinit var homeViewModel: HomeViewModel
+    private val productDetailsViewModel: ProductDetailsViewModel by activityViewModels()
     var adapter: listOfproductsAdapter? = null
     var _allProducts : List<Product> = emptyList()
 
@@ -51,8 +56,9 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             _allProducts=it
             adapter!!.setProducts(_allProducts)
         })
-
-
+      adapter!!.currentProduct.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+          productDetailsViewModel.setCurrentProduct(it)
+      })
         recyclerView.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
         val simpleCallBackHelper = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or  RIGHT) {
             override fun onMove(
