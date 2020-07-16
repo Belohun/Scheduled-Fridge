@@ -37,6 +37,10 @@ class productViewFunctions {
            "Spices"->{
                imageView.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.ic_spices))
            }
+           "Meat"->{
+               imageView.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.ic_meat))
+           }
+
            "Others"->{
                imageView.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.ic_others))
            }
