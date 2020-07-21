@@ -20,13 +20,13 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.scheduledfridge.ui.statistics.statisticsFragment"
+        android:name="com.example.scheduledfridge.ui.statistics.StatisticsFragment"
         android:label="@string/menu_statistics"
         tools:layout="@layout/fragment_statistics" />
 
     <fragment
         android:id="@+id/nav_history"
-        android:name="com.example.scheduledfridge.ui.history.historyFragment"
+        android:name="com.example.scheduledfridge.ui.history.HistoryFragment"
         android:label="@string/menu_history"
         tools:layout="@layout/fragment_history" />
     <fragment

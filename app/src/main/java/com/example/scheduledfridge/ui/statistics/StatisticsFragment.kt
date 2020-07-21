@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.scheduledfridge.R
 
-class statisticsFragment : Fragment() {
+class StatisticsFragment : Fragment() {
 
     //private lateinit var statisticsViewModel: statisticsViewModel
 
@@ -19,8 +19,8 @@ class statisticsFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val statisticsViewModel: statisticsViewModel by lazy {
-            ViewModelProviders.of(this).get(statisticsViewModel::class.java)
+        val statisticsViewModel: StatisticsViewModel by lazy {
+            ViewModelProviders.of(this).get(StatisticsViewModel::class.java)
         }
         val root = inflater.inflate(R.layout.fragment_statistics, container, false)
         val textView: TextView = root.findViewById(R.id.text_gallery)

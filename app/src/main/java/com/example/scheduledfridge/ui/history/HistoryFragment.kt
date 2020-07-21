@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.scheduledfridge.R
 
-class historyFragment : Fragment() {
+class HistoryFragment : Fragment() {
 
   //  private lateinit var historyViewModel: historyViewModel
 
@@ -19,8 +19,8 @@ class historyFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-       val  historyViewModel: historyViewModel by lazy {
-           ViewModelProviders.of(this).get(historyViewModel::class.java)
+       val  historyViewModel: HistoryViewModel by lazy {
+           ViewModelProviders.of(this).get(HistoryViewModel::class.java)
        }
 
         val root = inflater.inflate(R.layout.fragment_history, container, false)

@@ -1,20 +1,8 @@
 package com.example.scheduledfridge.database
-
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import java.util.*
 
-@Entity(tableName = "PRODUCTS")
-data class Product(
-    @PrimaryKey
-    var id: Int,
-    var productName: String,
-    var productType: String,
-    var productExpirationDate: String,
-    var productAdedDate: String,
-    var quantity: Int
-    )
 @Dao
 interface ProductDao{
     @Insert
@@ -24,12 +12,12 @@ interface ProductDao{
     @Delete
     fun delete(product: Product)
     @Query("SELECT * FROM PRODUCTS")
-    fun selectAllCitys():LiveData<List<Product>>
+    fun selectAllProducts():LiveData<List<Product>>
     @Query("SELECT id FROM PRODUCTS")
     fun selectAllIds():List<Int>
 
 }
-@Database(entities = arrayOf(Product::class),version = 1)
+@Database(entities = [Product::class],version = 1)
 abstract class ProductDatabase: RoomDatabase(){
             abstract fun productDao(): ProductDao
     companion object{

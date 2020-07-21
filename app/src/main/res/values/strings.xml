@@ -2,7 +2,7 @@
     <string name="app_name">ScheduledFridge</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Schedulded Fridge</string>
+    <string name="nav_header_title">Scheduled Fridge</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -10,6 +10,23 @@
     <string name="menu_home">Home</string>
     <string name="menu_history">History</string>
     <string name="menu_statistics">Statistics</string>
+    <string name="ExpirationDate">Expiration Date</string>
+    <string name="Name">Name</string>
+    <string name="Type">Type</string>
+    <string name="Quantity">Quantity</string>
+    <string name="daysLeft">daysLeft</string>
+    <string name="datePattern">d/M/yyyy</string>
+    <string name="Expired">Expired</string>
+    <string name="Days">days</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Add">Add</string>
+    <string name="QuantityWithColon">Quantity:</string>
+    <string name="NameWithColon">Name:</string>
+    <string name="TypeWithColon">Type:</string>
+    <string name="ExpirationDateWithColon">Expiration Date:</string>
+    <string name="AddedDateWithColon">Added Date:</string>
+    <string name="product_notification_channel_id" translatable="false">product_channel</string>
+    <string name="product_notification_channel_name" translatable="true">Product</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>

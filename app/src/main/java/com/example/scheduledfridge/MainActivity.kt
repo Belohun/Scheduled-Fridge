@@ -1,30 +1,17 @@
 package com.example.scheduledfridge
 
-import android.app.DatePickerDialog
-import android.app.SearchManager
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
-import androidx.appcompat.app.AlertDialog
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
-import com.example.scheduledfridge.ui.home.HomeFragment
-import kotlinx.android.synthetic.main.add_product_layout.*
-import kotlinx.android.synthetic.main.add_product_layout.view.*
+import com.google.android.material.navigation.NavigationView
 import net.danlew.android.joda.JodaTimeAndroid
-import java.util.*
-import javax.xml.datatype.DatatypeConstants.MONTHS
 
 class MainActivity : AppCompatActivity() {
 

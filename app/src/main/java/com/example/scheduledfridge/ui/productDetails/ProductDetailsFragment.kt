@@ -1,25 +1,21 @@
 package com.example.scheduledfridge.ui.productDetails
-
 import android.os.Bundle
 import androidx.transition.TransitionInflater
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.transition.ChangeBounds
 import com.example.scheduledfridge.R
-import com.example.scheduledfridge.functions.productViewFunctions
-import android.view.animation.AnimationUtils
+import com.example.scheduledfridge.functions.ProductViewFunctions
 import androidx.core.view.ViewCompat
-import java.util.*
+import com.example.scheduledfridge.database.Product
+import kotlinx.android.synthetic.main.fragment_product_details.*
+
 
 class ProductDetailsFragment : Fragment() {
-    internal val productDetailsViewModel : ProductDetailsViewModel by activityViewModels()
+    private val productDetailsViewModel : ProductDetailsViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
@@ -31,36 +27,31 @@ class ProductDetailsFragment : Fragment() {
     ): View? {
 
         val root = inflater.inflate(R.layout.fragment_product_details, container, false)
-        ViewCompat.setTranslationZ(root,100f)
-        val nameTextView:TextView = root.findViewById(R.id.productName_TextView_product_details)
-        val typeTextView:TextView = root.findViewById(R.id.type_textView_product_details)
-        val quanityTextView:TextView = root.findViewById(R.id.quanity_textView_product_details)
-        val expirationDateTextView:TextView = root.findViewById(R.id.expirationDate_textView_product_details)
-        val addedDateTextView:TextView = root.findViewById(R.id.addedDate_textView_product_details)
-        val imageView: ImageView = root.findViewById(R.id.type_Image_product_details)
-        val daysLeft: TextView = root.findViewById(R.id.daysLeft_textView_product_details)
-        productDetailsViewModel.currentProduct.observe(viewLifecycleOwner, Observer {
-            if (it!=null){
-                nameTextView.text = it.productName
-                typeTextView.text = it.productType
-                quanityTextView.text = it.quantity.toString()
-                expirationDateTextView.text = it.productExpirationDate
-                addedDateTextView.text = it.productAdedDate
-                productViewFunctions().setImage(imageView,it,context!!)
-                productViewFunctions().setdaysBetween(daysLeft,context!!,it)
-                imageView.transitionName=it.id.toString()
-                val daysLeftTranistionName = it.id.toString() + "daysLeft"
-                daysLeft.transitionName =daysLeftTranistionName
-            }
-            })
+        val translationZ = 100f
+        ViewCompat.setTranslationZ(root,translationZ)
         return root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        val view = this.targetFragment
-        val animation = AnimationUtils.loadAnimation(context,R.anim.fade_scale)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        productDetailsViewModel.currentProduct.observe(viewLifecycleOwner, Observer {
+            setProductDetailsViews(it)
+        })
+        super.onViewCreated(view, savedInstanceState)
 
     }
 
+    private fun setProductDetailsViews(it: Product) {
+        if (it != null) {
+            productName_TextView_product_details.text = it.productName
+            type_textView_product_details.text = it.productType
+            quanity_textView_product_details.text = it.quantity.toString()
+            expirationDate_textView_product_details.text = it.productExpirationDate
+            addedDate_textView_product_details.text = it.productAdedDate
+            ProductViewFunctions().setImage(type_Image_product_details, it, context!!)
+            ProductViewFunctions().setDaysBetween(daysLeft_textView_product_details, context!!, it)
+            type_Image_product_details.transitionName = it.id.toString()
+            val daysLeftTransitionName = it.id.toString() + getString(R.string.daysLeft)
+            daysLeft_textView_product_details.transitionName = daysLeftTransitionName
+        }
+    }
 }

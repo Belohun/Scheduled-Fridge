@@ -1,33 +1,32 @@
 package com.example.scheduledfridge.ui.home
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
-import com.example.scheduledfridge.functions.productViewFunctions
-class listOfproductsAdapter internal constructor(context: Context?): RecyclerView.Adapter<listOfproductsAdapter.ViewHolder>() {
+import com.example.scheduledfridge.functions.ProductViewFunctions
+import kotlinx.android.synthetic.main.product_layout.view.*
+
+
+class ListOfProductsAdapter internal constructor(val context: Context?): RecyclerView.Adapter<ListOfProductsAdapter.ViewHolder>() {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    var products = emptyList<Product>()
-    val context = context
-    var navController: NavController?=null
+    private var products = emptyList<Product>()
+    private var navController: NavController?=null
      val currentProduct = MutableLiveData<Product>()
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
-        val productName = itemView.findViewById<TextView>(R.id.product_name_textView)
-        val daysLeft = itemView.findViewById<TextView>(R.id.daysLeft_textView)
-        val quanity = itemView.findViewById<TextView>(R.id.product_quanity_textView)
-        val icon = itemView.findViewById<ImageView>(R.id.type_Image)
+        val productName = itemView.product_name_textView!!
+        val daysLeft = itemView.daysLeft_textView!!
+        val quantity = itemView.product_quantity_textView!!
+        val icon = itemView.type_Image!!
 
     }
 
@@ -44,38 +43,37 @@ class listOfproductsAdapter internal constructor(context: Context?): RecyclerVie
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val animation = AnimationUtils.loadAnimation(context,R.anim.fade_scale)
-        animation.startOffset = (position*30).toLong()
+        val startOffsetMultiplier = 20
+        animation.startOffset = (position*startOffsetMultiplier).toLong()
         holder.itemView.animation = animation
         val current = products[position]
-
         holder.productName.text = current.productName
-        holder.quanity.text = current.quantity.toString()
-        productViewFunctions().setImage(holder.icon,current,context!!)
-        productViewFunctions().setdaysBetween(holder.daysLeft,context,current)
+        holder.quantity.text = current.quantity.toString()
+        ProductViewFunctions().setImage(holder.icon,current,context!!)
+        ProductViewFunctions().setDaysBetween(holder.daysLeft,context,current)
+        holderOnClick(holder, current)
 
+    }
+
+    private fun holderOnClick(holder: ViewHolder, current: Product) {
         holder.itemView.setOnClickListener {
             holder.icon.transitionName = current.id.toString()
-            holder.daysLeft.transitionName = current.id.toString() + "daysLeft"
+            holder.daysLeft.transitionName = current.id.toString() + context!!.getString(R.string.daysLeft)
             val extras = FragmentNavigatorExtras(
                 holder.icon to current.id.toString(),
-                holder.daysLeft to current.id.toString() + "daysLeft"
-                )
-            navController!!.navigate(R.id.action_nav_home_to_nav_productDetails,null,null,extras)
+                holder.daysLeft to current.id.toString() + context.getString(R.string.daysLeft)
+            )
+            navController!!.navigate(R.id.action_nav_home_to_nav_productDetails, null, null, extras)
             setCurrentProduct(current)
 
 
-
         }
-
     }
 
     internal fun setProducts(products: List<Product>){
         this.products = products
         notifyDataSetChanged()
     }
-/*    internal fun getCurrentProduct(): Product? {
-     return _currentProduct.value
-    }*/
     private fun setCurrentProduct(product : Product){
         currentProduct.value = product
 

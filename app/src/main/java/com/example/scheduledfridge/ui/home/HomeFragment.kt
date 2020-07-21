@@ -1,16 +1,13 @@
 package com.example.scheduledfridge.ui.home
-
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.graphics.Canvas
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
@@ -23,6 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.add_product_layout.*
 import kotlinx.android.synthetic.main.add_product_layout.view.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -32,8 +30,8 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
     private lateinit var homeViewModel: HomeViewModel
     private val productDetailsViewModel: ProductDetailsViewModel by activityViewModels()
-    var adapter: listOfproductsAdapter? = null
-    var _allProducts : List<Product> = emptyList()
+    private var adapter: ListOfProductsAdapter? = null
+    var allProducts : List<Product> = emptyList()
 
     @SuppressLint("NewApi")
     override fun onCreateView(
@@ -44,137 +42,133 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         setHasOptionsMenu(true)
+        return root
+    }
 
-
-
-        val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerView_home)
-
-
-         adapter = listOfproductsAdapter(context)
-        setAdapter(recyclerView, adapter!!)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        adapter = ListOfProductsAdapter(context)
+        setAdapter(recyclerView_home, adapter!!)
         homeViewModel.allProducts.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            _allProducts=it
-            adapter!!.setProducts(_allProducts)
+            allProducts=it
+            adapter!!.setProducts(allProducts)
         })
-      adapter!!.currentProduct.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-          productDetailsViewModel.setCurrentProduct(it)
-      })
-        recyclerView.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
+        adapter!!.currentProduct.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            productDetailsViewModel.setCurrentProduct(it)
+        })
+        recyclerView_home.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
         val simpleCallBackHelper = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or  RIGHT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-               return false
+                return false
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 when(direction){
                     ItemTouchHelper.LEFT ->{
-                        homeViewModel.delete(_allProducts[position])
+                        homeViewModel.delete(allProducts[position])
                     }
                     RIGHT ->{
-                        homeViewModel.delete(_allProducts[position])
+                        homeViewModel.delete(allProducts[position])
                     }
 
                 }
 
             }
-
-            override fun onChildDraw(
-                c: Canvas,
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                dX: Float,
-                dY: Float,
-                actionState: Int,
-                isCurrentlyActive: Boolean
-            ) {
-                super.onChildDraw(
-                    c,
-                    recyclerView,
-                    viewHolder,
-                    dX,
-                    dY,
-                    actionState,
-                    isCurrentlyActive
-                )
-                RecyclerViewSwipeDecorator.Builder(
-                    c,
-                    recyclerView,
-                    viewHolder,
-                    dX,
-                    dY,
-                    actionState,
-                    isCurrentlyActive
-                )
+            override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                     .addSwipeLeftActionIcon(R.drawable.ic_check_circle)
                     .addSwipeRightActionIcon(R.drawable.ic_delete)
                     .create()
                     .decorate()
-
             }
-
-
-
-
-
-
-
-
         }
         val itemTouchHelper = ItemTouchHelper(simpleCallBackHelper)
-        itemTouchHelper.attachToRecyclerView(recyclerView)
-
-        val fab: FloatingActionButton = root.findViewById(R.id.fab)
+        itemTouchHelper.attachToRecyclerView(recyclerView_home)
+        fabOnClick(fab)
+        super.onViewCreated(view, savedInstanceState)
+    }
+    private fun fabOnClick(fab: FloatingActionButton) {
         fab.setOnClickListener {
-            val dialogView = LayoutInflater.from(this.activity).inflate(R.layout.add_product_layout,null)
+            val dialogView =
+                LayoutInflater.from(this.activity).inflate(R.layout.add_product_layout, null)
             val mBuilder = AlertDialog.Builder(this.activity!!)
                 .setView(dialogView)
             val mAlertDialog = mBuilder.show()
-            val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(context!!,R.array.types,R.layout.support_simple_spinner_dropdown_item)
-            mAlertDialog.type_AutoCompliteTextView.setAdapter(adapter)
-
-
-
-            dialogView.calendar_ImageButton.setOnClickListener {
-                val c = Calendar.getInstance()
-                val year = c.get(Calendar.YEAR)
-                val month = c.get(Calendar.MONTH)
-                val day = c.get(Calendar.DAY_OF_MONTH)
-                val dpd = DatePickerDialog(this.activity!!, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                    mAlertDialog.date_TextInputEditText.setText("" + dayOfMonth  +"/" + (monthOfYear + 1) + "/" + year)
-                }, year, month, day)
-                dpd.show()
-            }
-            dialogView.btn_add.setOnClickListener {
-                val current = LocalDateTime.now()
-                val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                val formatted = current.format(formatter)
-                //val id = homeViewModel.getLowestPossibleId(_allProducts)
-                val id: Int
-                if(_allProducts.isEmpty()){
-                   id = 1
-                }else{
-                    id = _allProducts.last().id + 1
-                }
-                val _product = Product(id,mAlertDialog.add_product_name_text.text.toString(),mAlertDialog.type_AutoCompliteTextView.text.toString(),mAlertDialog.date_TextInputEditText.text.toString(),formatted.toString()/*formatted.toString()*/,mAlertDialog.quanity_TextInputEditText.text.toString().toInt())
-                homeViewModel.insert(_product)
-
-
-                mAlertDialog.dismiss()
-            }
-            dialogView.btn_cancel.setOnClickListener{
+            val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
+                context!!,
+                R.array.types,
+                R.layout.support_simple_spinner_dropdown_item
+            )
+            mAlertDialog.type_AutoCompleteTextView.setAdapter(adapter)
+            calendarOnClick(dialogView, mAlertDialog)
+            banAddOnClick(dialogView, mAlertDialog)
+            dialogView.btn_cancel.setOnClickListener {
                 mAlertDialog.dismiss()
             }
         }
-        return root
     }
+
+    private fun calendarOnClick(
+        dialogView: View,
+        mAlertDialog: AlertDialog
+    ) {
+        dialogView.calendar_ImageButton.setOnClickListener {
+            val c = Calendar.getInstance()
+            val year = c.get(Calendar.YEAR)
+            val month = c.get(Calendar.MONTH)
+            val day = c.get(Calendar.DAY_OF_MONTH)
+            val dpd = DatePickerDialog(
+                this.activity!!,
+                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                    mAlertDialog.date_TextInputEditText.setText("" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year)
+                },
+                year,
+                month,
+                day
+            )
+            dpd.show()
+        }
+    }
+
+    @SuppressLint("NewApi")
+    private fun banAddOnClick(
+        dialogView: View,
+        mAlertDialog: AlertDialog
+    ) {
+        dialogView.btn_add.setOnClickListener {
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            val formatted = current.format(formatter)
+            //val id = homeViewModel.getLowestPossibleId(_allProducts)
+            val id: Int = if (allProducts.isEmpty()) {
+                1
+            } else {
+                allProducts.last().id + 1
+            }
+            val product = Product(
+                id,
+                mAlertDialog.add_product_name_text.text.toString(),
+                mAlertDialog.type_AutoCompleteTextView.text.toString(),
+                mAlertDialog.date_TextInputEditText.text.toString(),
+                formatted.toString()/*formatted.toString()*/,
+                mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
+            )
+            homeViewModel.insert(product)
+
+
+            mAlertDialog.dismiss()
+        }
+    }
+
     private fun setAdapter(
         recyclerView: RecyclerView,
-        adapter: listOfproductsAdapter
+        adapter: ListOfProductsAdapter
     ){
 
         recyclerView.adapter = adapter
@@ -195,12 +189,12 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
     override fun onQueryTextChange(p0: String?): Boolean {
     if(p0 == null || p0.trim().isEmpty()){
-        adapter!!.setProducts(_allProducts)
+        adapter!!.setProducts(allProducts)
         return false
     }
-        var newText = p0.toLowerCase()
+        val newText = p0.toLowerCase()
         val filteredNewsList: ArrayList<Product> = ArrayList()
-        _allProducts.forEach{
+        allProducts.forEach{
             val name = it.productName.toLowerCase()
             val type = it.productType.toLowerCase()
             if(name.contains(newText) or type.contains(newText) or it.quantity.toString().contains(newText)){
@@ -214,7 +208,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         TODO("Not yet implemented")
     }
     override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
-        adapter!!.setProducts(_allProducts)
+        adapter!!.setProducts(allProducts)
         return true
     }
 }

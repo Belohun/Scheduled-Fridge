@@ -1,8 +1,9 @@
 package com.example.scheduledfridge.ui.home
 
 import android.app.Application
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.example.scheduledfridge.database.ApplicationRepository
 import com.example.scheduledfridge.database.Product
 import com.example.scheduledfridge.database.ProductDatabase
