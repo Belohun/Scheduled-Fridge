@@ -24,13 +24,15 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
     private lateinit var homeViewModel: HomeViewModel
     private val productDetailsViewModel: ProductDetailsViewModel by activityViewModels()
-    private var adapter: ListOfProductsAdapter? = null
+    private var listOfProductsAdapter: ListOfProductsAdapter? = null
+    private var categoriesAdapter: CategoriesAdapter? = null
     var allProducts : List<Product> = emptyList()
 
     @SuppressLint("NewApi")
@@ -45,17 +47,27 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val categoryArrayAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.types,
+            R.layout.support_simple_spinner_dropdown_item
+        )
+        val categoriesList = returnCategoryList(categoryArrayAdapter)
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        adapter = ListOfProductsAdapter(context)
-        setAdapter(recyclerView_home, adapter!!)
+        listOfProductsAdapter = ListOfProductsAdapter(context)
+        categoriesAdapter = CategoriesAdapter(context,categoriesList)
+        recyclerView_home.adapter = listOfProductsAdapter
+        recyclerView_Categories.adapter =categoriesAdapter
+
         homeViewModel.allProducts.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             allProducts=it
-            adapter!!.setProducts(allProducts)
+            listOfProductsAdapter!!.setProducts(allProducts)
         })
-        adapter!!.currentProduct.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        listOfProductsAdapter!!.currentProduct.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             productDetailsViewModel.setCurrentProduct(it)
         })
         recyclerView_home.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
+        recyclerView_Categories.layoutManager = LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
         val simpleCallBackHelper = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or  RIGHT) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -89,22 +101,18 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         }
         val itemTouchHelper = ItemTouchHelper(simpleCallBackHelper)
         itemTouchHelper.attachToRecyclerView(recyclerView_home)
-        fabOnClick(fab)
+        fabOnClick(fab,categoryArrayAdapter)
         super.onViewCreated(view, savedInstanceState)
     }
-    private fun fabOnClick(fab: FloatingActionButton) {
+    private fun fabOnClick(fab: FloatingActionButton, adapter: ArrayAdapter<CharSequence>) {
         fab.setOnClickListener {
             val dialogView =
                 LayoutInflater.from(this.activity).inflate(R.layout.add_product_layout, null)
             val mBuilder = AlertDialog.Builder(this.requireActivity())
                 .setView(dialogView)
             val mAlertDialog = mBuilder.show()
-            val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
-                requireContext(),
-                R.array.types,
-                R.layout.support_simple_spinner_dropdown_item
-            )
 
+1
 
             mAlertDialog.type_AutoCompleteTextView.setAdapter(adapter)
             calendarOnClick(dialogView, mAlertDialog)
@@ -131,7 +139,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             val day = c.get(Calendar.DAY_OF_MONTH)
             val dpd = DatePickerDialog(
                 this.requireActivity(),
-                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                     val date = "" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year
                     mAlertDialog.date_TextInputEditText.setText(date)
                 },
@@ -214,15 +222,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             }
     }
 
-    private fun setAdapter(
-        recyclerView: RecyclerView,
-        adapter: ListOfProductsAdapter
-    ){
-
-        recyclerView.adapter = adapter
-
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main, menu)
         val searchView: androidx.appcompat.widget.SearchView = menu.findItem(R.id.action_search).actionView as androidx.appcompat.widget.SearchView
@@ -237,7 +236,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
     override fun onQueryTextChange(p0: String?): Boolean {
     if(p0 == null || p0.trim().isEmpty()){
-        adapter!!.setProducts(allProducts)
+        listOfProductsAdapter!!.setProducts(allProducts)
         return false
     }
         val newText = p0.toLowerCase(Locale.ROOT)
@@ -249,14 +248,27 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 filteredNewsList.add(Product(it.id,it.productName,it.productType,it.productExpirationDate,it.productAdedDate,it.quantity))
             }
         }
-        adapter!!.setProducts(filteredNewsList)
+        listOfProductsAdapter!!.setProducts(filteredNewsList)
         return true
     }
     override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
         TODO("Not yet implemented")
     }
     override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
-        adapter!!.setProducts(allProducts)
+        listOfProductsAdapter!!.setProducts(allProducts)
         return true
     }
+    private fun returnCategoryList(adapter: ArrayAdapter<CharSequence>): ArrayList<String> {
+        val categories: ArrayList<String> = ArrayList()
+        categories.add("All")
+        val size = adapter.count
+        var i = 0
+        while(i < size){
+            categories.add(adapter.getItem(i).toString())
+            i++
+        }
+        return categories
+
+    }
+
 }

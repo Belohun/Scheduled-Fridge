@@ -1,17 +1,21 @@
 package com.example.scheduledfridge.ui.home
-
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.product_layout.view.*
+import com.example.scheduledfridge.R
+import kotlinx.android.synthetic.main.category_layout.view.*
 
-class CategoriesAdapter internal constructor(val context: Context?): RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
 
+class CategoriesAdapter internal constructor(val context: Context?,
+                                             private var categories: ArrayList<String>
+): RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
+
+    private val inflater: LayoutInflater = LayoutInflater.from(context)
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-
-        val category = itemView.product_name_textView!!
-
+        val categoryName = itemView.categoryName_TextView!!
 
     }
 
@@ -20,15 +24,20 @@ class CategoriesAdapter internal constructor(val context: Context?): RecyclerVie
         parent: ViewGroup,
         viewType: Int
     ): CategoriesAdapter.ViewHolder {
-        TODO("Not yet implemented")
+
+        val itemView = inflater.inflate(R.layout.category_layout,parent,false)
+        return ViewHolder(itemView)
+
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+       return categories.size
     }
 
     override fun onBindViewHolder(holder: CategoriesAdapter.ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+
+
+      holder.categoryName.text = categories[position]
     }
 
 }
