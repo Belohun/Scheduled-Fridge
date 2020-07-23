@@ -110,7 +110,9 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             calendarOnClick(dialogView, mAlertDialog)
 
             buttonAddOnClick(dialogView, mAlertDialog)
-
+            mAlertDialog.type_AutoCompleteTextView.setOnClickListener{
+                mAlertDialog.type_AutoCompleteTextView.error = null
+            }
 
             dialogView.btn_cancel.setOnClickListener {
                 mAlertDialog.dismiss()
