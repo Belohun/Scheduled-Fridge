@@ -1,12 +1,7 @@
 <resources>
     <string name="app_name">ScheduledFridge</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Scheduled Fridge</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_info">App Info</string>
     <string name="menu_home">Home</string>
     <string name="menu_history">History</string>
     <string name="menu_statistics">Statistics</string>
@@ -25,8 +20,8 @@
     <string name="TypeWithColon">Type:</string>
     <string name="ExpirationDateWithColon">Expiration Date:</string>
     <string name="AddedDateWithColon">Added Date:</string>
-    <string name="product_notification_channel_id" translatable="false">product_channel</string>
-    <string name="product_notification_channel_name" translatable="true">Product</string>
+    <string name="Search">Search</string>
+    <string name="Search...">Search…</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>

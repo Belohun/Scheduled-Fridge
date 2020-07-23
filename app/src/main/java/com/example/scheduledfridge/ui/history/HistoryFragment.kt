@@ -12,7 +12,6 @@ import com.example.scheduledfridge.R
 
 class HistoryFragment : Fragment() {
 
-  //  private lateinit var historyViewModel: historyViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,

@@ -7,6 +7,5 @@
     <color name="colorFresh">#00b93a</color>
     <color name="colorGoingToExpire">#D38601</color>
     <color name="colorExpired">#B90000</color>
-    <color name="overlayBackground">#7f333639</color>
 
 </resources>

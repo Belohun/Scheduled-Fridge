@@ -3,6 +3,7 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.graphics.Canvas
 import android.os.Bundle
+import android.text.InputType
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
@@ -21,6 +22,7 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.add_product_layout.*
 import kotlinx.android.synthetic.main.add_product_layout.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_product_details.view.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -39,7 +41,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         setHasOptionsMenu(true)
         return root
@@ -97,17 +98,22 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         fab.setOnClickListener {
             val dialogView =
                 LayoutInflater.from(this.activity).inflate(R.layout.add_product_layout, null)
-            val mBuilder = AlertDialog.Builder(this.activity!!)
+            val mBuilder = AlertDialog.Builder(this.requireActivity())
                 .setView(dialogView)
             val mAlertDialog = mBuilder.show()
             val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
-                context!!,
+                requireContext(),
                 R.array.types,
                 R.layout.support_simple_spinner_dropdown_item
             )
+
+
             mAlertDialog.type_AutoCompleteTextView.setAdapter(adapter)
             calendarOnClick(dialogView, mAlertDialog)
-            banAddOnClick(dialogView, mAlertDialog)
+
+            buttonAddOnClick(dialogView, mAlertDialog)
+
+
             dialogView.btn_cancel.setOnClickListener {
                 mAlertDialog.dismiss()
             }
@@ -124,9 +130,10 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             val month = c.get(Calendar.MONTH)
             val day = c.get(Calendar.DAY_OF_MONTH)
             val dpd = DatePickerDialog(
-                this.activity!!,
+                this.requireActivity(),
                 DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                    mAlertDialog.date_TextInputEditText.setText("" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year)
+                    val date = "" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year
+                    mAlertDialog.date_TextInputEditText.setText(date)
                 },
                 year,
                 month,
@@ -137,33 +144,80 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     }
 
     @SuppressLint("NewApi")
-    private fun banAddOnClick(
+    private fun buttonAddOnClick(
         dialogView: View,
         mAlertDialog: AlertDialog
     ) {
         dialogView.btn_add.setOnClickListener {
+
             val current = LocalDateTime.now()
             val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
             val formatted = current.format(formatter)
-            //val id = homeViewModel.getLowestPossibleId(_allProducts)
+            var noErrors = true
+            when {
+                dialogView.add_product_name_text.text!!.length > 26 -> {
+                    noErrors=false
+                    dialogView.add_product_name_text.error="Name should be max length of 26 characters!"
+                }
+                dialogView.add_product_name_text.text!!.isEmpty() -> {
+                    noErrors=false
+                    dialogView.add_product_name_text.error="Field must not be empty!"
+                }
+                else -> {
+                    dialogView.add_product_name_text.error = null
+                }
+            }
+            when {
+                dialogView.quantity_TextInputEditText.text!!.isEmpty() -> {
+                    noErrors=false
+                    dialogView.quantity_TextInputEditText.error="Field must not be empty!"
+
+                }
+                dialogView.quantity_TextInputEditText.text!!.length > 5 -> {
+                    noErrors=false
+                    dialogView.quantity_TextInputEditText.error="Name should be max length of 5 characters!"
+                }
+                else -> {
+                    dialogView.quantity_TextInputEditText.error = null
+                }
+            }
+            if( dialogView.type_AutoCompleteTextView!!.text.isEmpty()){
+                noErrors=false
+                dialogView.type_AutoCompleteTextView.error ="Select one of types!"
+            }
+            else {
+                dialogView.type_AutoCompleteTextView.error = null
+            }
+            if(dialogView.date_TextInputEditText.text!!.isNotEmpty()){
+
+
+
+
+            }
+
             val id: Int = if (allProducts.isEmpty()) {
                 1
             } else {
                 allProducts.last().id + 1
             }
-            val product = Product(
-                id,
-                mAlertDialog.add_product_name_text.text.toString(),
-                mAlertDialog.type_AutoCompleteTextView.text.toString(),
-                mAlertDialog.date_TextInputEditText.text.toString(),
-                formatted.toString()/*formatted.toString()*/,
-                mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
-            )
-            homeViewModel.insert(product)
 
 
-            mAlertDialog.dismiss()
-        }
+            if(noErrors){
+                val product = Product(
+                    id,
+                    mAlertDialog.add_product_name_text.text.toString(),
+                    mAlertDialog.type_AutoCompleteTextView.text.toString(),
+                    mAlertDialog.date_TextInputEditText.text.toString(),
+                    formatted.toString()
+                    ,
+                    mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
+                )
+
+                homeViewModel.insert(product)
+                mAlertDialog.dismiss()
+            }
+
+            }
     }
 
     private fun setAdapter(
@@ -179,7 +233,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         inflater.inflate(R.menu.main, menu)
         val searchView: androidx.appcompat.widget.SearchView = menu.findItem(R.id.action_search).actionView as androidx.appcompat.widget.SearchView
         searchView.setOnQueryTextListener(this)
-        searchView.queryHint = "Search..."
+        searchView.queryHint = requireContext().getString(R.string.Search___)
         super.onCreateOptionsMenu(menu, inflater)
 
     }
@@ -192,11 +246,11 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         adapter!!.setProducts(allProducts)
         return false
     }
-        val newText = p0.toLowerCase()
+        val newText = p0.toLowerCase(Locale.ROOT)
         val filteredNewsList: ArrayList<Product> = ArrayList()
         allProducts.forEach{
-            val name = it.productName.toLowerCase()
-            val type = it.productType.toLowerCase()
+            val name = it.productName.toLowerCase(Locale.ROOT)
+            val type = it.productType.toLowerCase(Locale.ROOT)
             if(name.contains(newText) or type.contains(newText) or it.quantity.toString().contains(newText)){
                 filteredNewsList.add(Product(it.id,it.productName,it.productType,it.productExpirationDate,it.productAdedDate,it.quantity))
             }

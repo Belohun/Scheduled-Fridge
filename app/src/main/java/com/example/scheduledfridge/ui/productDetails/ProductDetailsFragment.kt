@@ -44,11 +44,11 @@ class ProductDetailsFragment : Fragment() {
         if (it != null) {
             productName_TextView_product_details.text = it.productName
             type_textView_product_details.text = it.productType
-            quanity_textView_product_details.text = it.quantity.toString()
+            quantity_textView_product_details.text = it.quantity.toString()
             expirationDate_textView_product_details.text = it.productExpirationDate
             addedDate_textView_product_details.text = it.productAdedDate
-            ProductViewFunctions().setImage(type_Image_product_details, it, context!!)
-            ProductViewFunctions().setDaysBetween(daysLeft_textView_product_details, context!!, it)
+            ProductViewFunctions().setImage(type_Image_product_details, it, requireContext())
+            ProductViewFunctions().setDaysBetween(daysLeft_textView_product_details, requireContext(), it)
             type_Image_product_details.transitionName = it.id.toString()
             val daysLeftTransitionName = it.id.toString() + getString(R.string.daysLeft)
             daysLeft_textView_product_details.transitionName = daysLeftTransitionName

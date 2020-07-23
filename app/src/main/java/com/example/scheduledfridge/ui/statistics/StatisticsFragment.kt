@@ -12,8 +12,6 @@ import com.example.scheduledfridge.R
 
 class StatisticsFragment : Fragment() {
 
-    //private lateinit var statisticsViewModel: statisticsViewModel
-
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,

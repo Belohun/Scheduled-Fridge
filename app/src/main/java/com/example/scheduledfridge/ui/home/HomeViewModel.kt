@@ -27,18 +27,5 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             repository.delete(product)
         }
     }
-    fun getLowestPossibleId(product: List<Product>): Int {
-        var i = 0
-        while(product.size > i){
-            i++
-            if(i != product[i].id)
-            {
-                return i
-            }
-        }
-        return i
-
-
-    }
 
 }
