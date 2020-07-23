@@ -3,7 +3,6 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.graphics.Canvas
 import android.os.Bundle
-import android.text.InputType
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
@@ -22,7 +21,6 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.add_product_layout.*
 import kotlinx.android.synthetic.main.add_product_layout.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_product_details.view.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -187,12 +185,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             }
             else {
                 dialogView.type_AutoCompleteTextView.error = null
-            }
-            if(dialogView.date_TextInputEditText.text!!.isNotEmpty()){
-
-
-
-
             }
 
             val id: Int = if (allProducts.isEmpty()) {
