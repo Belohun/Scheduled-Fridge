@@ -56,22 +56,23 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         listOfProductsAdapter = ListOfProductsAdapter(context)
         categoriesAdapter = CategoriesAdapter(context)
         recyclerView_Categories.adapter =categoriesAdapter
-        homeViewModel.categories.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            categoriesAdapter!!.setCategories(it)
 
-        })
 
 
         homeViewModel.allProducts.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             currentProducts=it
             allProducts=it
-            listOfProductsAdapter!!.setProducts(currentProducts)
+            val categories = returnPresentCategories(allProducts)
+            if (categories.size == 1){
+                categoriesAdapter!!.setCategories(emptyList())
+            }else {
+                categoriesAdapter!!.setCategories(categories)
+            }
+                listOfProductsAdapter!!.setProducts(currentProducts)
         })
 
         categoriesAdapter!!.currentCategories.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if(it!=null){
-
-                Log.d("CurrentCategories",it.toString())
                 val products = categorizeProducts(allProducts,it)
 
                 currentProducts = products
@@ -286,6 +287,16 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             }
         }
         return tempProducts
+
+    }
+    private fun returnPresentCategories(allProducts: List<Product>): ArrayList<String> {
+        val categories: ArrayList<String> = ArrayList()
+        allProducts.forEach {
+            if(!categories.contains(it.productType)){
+                categories.add(it.productType)
+            }
+        }
+        return categories
 
     }
 

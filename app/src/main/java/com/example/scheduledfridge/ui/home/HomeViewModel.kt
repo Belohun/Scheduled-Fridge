@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
      private val repository: ApplicationRepository
     val allProducts: LiveData<List<Product>>
-    val categories= MutableLiveData<ArrayList<String>>()
+
 
 
 
@@ -26,8 +26,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
          repository = ApplicationRepository(dao)
          allProducts = repository.allProducts
 
-
-        setCategories(returnCategoryList(categoryArrayAdapter))
 
 
 
@@ -53,9 +51,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
         return categories
 
-    }
-    private fun setCategories(list: ArrayList<String>){
-        categories.value = list
     }
 
 
