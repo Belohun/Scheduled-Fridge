@@ -218,10 +218,10 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 dialogView.type_AutoCompleteTextView.error = null
             }
 
-            val id: Int = if (currentProducts.isEmpty()) {
+            val id: Int = if (allProducts.isEmpty()) {
                 1
             } else {
-                currentProducts.last().id + 1
+                allProducts.last().id + 1
             }
 
 
