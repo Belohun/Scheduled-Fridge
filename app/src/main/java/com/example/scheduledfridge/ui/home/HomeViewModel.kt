@@ -54,7 +54,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         return categories
 
     }
-    fun setCategories(list: ArrayList<String>){
+    private fun setCategories(list: ArrayList<String>){
         categories.value = list
     }
 

@@ -66,7 +66,7 @@ class CategoriesAdapter internal constructor(val context: Context?): RecyclerVie
 
 
     }
-    fun setCurrentCategories(list: List<String>){
+    private fun setCurrentCategories(list: List<String>){
         currentCategories.value = list
     }
     fun setCategories(list: List<String>){

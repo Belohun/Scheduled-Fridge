@@ -34,7 +34,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     private var listOfProductsAdapter: ListOfProductsAdapter? = null
     private var categoriesAdapter: CategoriesAdapter? = null
     var currentProducts : List<Product> = emptyList()
-    var allProducts : List<Product> = emptyList()
+    private var allProducts : List<Product> = emptyList()
 
     @SuppressLint("NewApi")
     override fun onCreateView(
@@ -279,7 +279,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         return true
     }
     private fun categorizeProducts(allProducts: List<Product>,currentCategories: List<String>): ArrayList<Product> {
-         var tempProducts: ArrayList<Product> = ArrayList()
+         val tempProducts: ArrayList<Product> = ArrayList()
         allProducts.forEach{
             if(currentCategories.contains(it.productType)){
                 tempProducts.add(it)
