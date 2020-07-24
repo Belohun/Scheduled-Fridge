@@ -12,5 +12,4 @@ class ProductDetailsViewModel(application: Application):AndroidViewModel(applica
 
     }
 
-
 }

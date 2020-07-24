@@ -3,12 +3,12 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,10 +29,11 @@ import kotlin.collections.ArrayList
 class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
-    private lateinit var homeViewModel: HomeViewModel
+    private  val homeViewModel: HomeViewModel by activityViewModels()
     private val productDetailsViewModel: ProductDetailsViewModel by activityViewModels()
     private var listOfProductsAdapter: ListOfProductsAdapter? = null
     private var categoriesAdapter: CategoriesAdapter? = null
+    var currentProducts : List<Product> = emptyList()
     var allProducts : List<Product> = emptyList()
 
     @SuppressLint("NewApi")
@@ -52,20 +53,40 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             R.array.types,
             R.layout.support_simple_spinner_dropdown_item
         )
-        val categoriesList = returnCategoryList(categoryArrayAdapter)
-        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         listOfProductsAdapter = ListOfProductsAdapter(context)
-        categoriesAdapter = CategoriesAdapter(context,categoriesList)
-        recyclerView_home.adapter = listOfProductsAdapter
+        categoriesAdapter = CategoriesAdapter(context)
         recyclerView_Categories.adapter =categoriesAdapter
+        homeViewModel.categories.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+            categoriesAdapter!!.setCategories(it)
+
+        })
+
 
         homeViewModel.allProducts.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            currentProducts=it
             allProducts=it
-            listOfProductsAdapter!!.setProducts(allProducts)
+            listOfProductsAdapter!!.setProducts(currentProducts)
+        })
+
+        categoriesAdapter!!.currentCategories.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if(it!=null){
+
+                Log.d("CurrentCategories",it.toString())
+                val products = categorizeProducts(allProducts,it)
+
+                currentProducts = products
+                listOfProductsAdapter!!.setProducts(products)
+            }
         })
         listOfProductsAdapter!!.currentProduct.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             productDetailsViewModel.setCurrentProduct(it)
         })
+
+        recyclerView_home.adapter = listOfProductsAdapter
+
+
+
+
         recyclerView_home.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
         recyclerView_Categories.layoutManager = LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
         val simpleCallBackHelper = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or  RIGHT) {
@@ -81,10 +102,10 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 val position = viewHolder.adapterPosition
                 when(direction){
                     ItemTouchHelper.LEFT ->{
-                        homeViewModel.delete(allProducts[position])
+                        homeViewModel.delete(currentProducts[position])
                     }
                     RIGHT ->{
-                        homeViewModel.delete(allProducts[position])
+                        homeViewModel.delete(currentProducts[position])
                     }
 
                 }
@@ -197,10 +218,10 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 dialogView.type_AutoCompleteTextView.error = null
             }
 
-            val id: Int = if (allProducts.isEmpty()) {
+            val id: Int = if (currentProducts.isEmpty()) {
                 1
             } else {
-                allProducts.last().id + 1
+                currentProducts.last().id + 1
             }
 
 
@@ -236,16 +257,15 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
     override fun onQueryTextChange(p0: String?): Boolean {
     if(p0 == null || p0.trim().isEmpty()){
-        listOfProductsAdapter!!.setProducts(allProducts)
+        listOfProductsAdapter!!.setProducts(currentProducts)
         return false
     }
         val newText = p0.toLowerCase(Locale.ROOT)
         val filteredNewsList: ArrayList<Product> = ArrayList()
-        allProducts.forEach{
+        currentProducts.forEach{
             val name = it.productName.toLowerCase(Locale.ROOT)
-            val type = it.productType.toLowerCase(Locale.ROOT)
-            if(name.contains(newText) or type.contains(newText) or it.quantity.toString().contains(newText)){
-                filteredNewsList.add(Product(it.id,it.productName,it.productType,it.productExpirationDate,it.productAdedDate,it.quantity))
+            if(name.contains(newText) or it.quantity.toString().contains(newText)){
+                filteredNewsList.add(it)
             }
         }
         listOfProductsAdapter!!.setProducts(filteredNewsList)
@@ -255,19 +275,17 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         TODO("Not yet implemented")
     }
     override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
-        listOfProductsAdapter!!.setProducts(allProducts)
+        listOfProductsAdapter!!.setProducts(currentProducts)
         return true
     }
-    private fun returnCategoryList(adapter: ArrayAdapter<CharSequence>): ArrayList<String> {
-        val categories: ArrayList<String> = ArrayList()
-        categories.add("All")
-        val size = adapter.count
-        var i = 0
-        while(i < size){
-            categories.add(adapter.getItem(i).toString())
-            i++
+    private fun categorizeProducts(allProducts: List<Product>,currentCategories: List<String>): ArrayList<Product> {
+         var tempProducts: ArrayList<Product> = ArrayList()
+        allProducts.forEach{
+            if(currentCategories.contains(it.productType)){
+                tempProducts.add(it)
+            }
         }
-        return categories
+        return tempProducts
 
     }
 
