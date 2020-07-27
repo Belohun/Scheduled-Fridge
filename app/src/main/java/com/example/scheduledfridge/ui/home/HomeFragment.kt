@@ -103,10 +103,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 if (scrollY == 0) {
                    fab.show()
                 }
-              /*  if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
-                   fab.show()
-                }*/
-
 
             })}
 
