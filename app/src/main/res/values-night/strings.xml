@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">ScheduledFridge</string>
+    <string name="nav_header_title">Scheduled Fridge</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_history">History</string>
+    <string name="menu_statistics">Statistics</string>
+    <string name="ExpirationDate">Expiration Date</string>
+    <string name="Name">Name</string>
+    <string name="Type">Type</string>
+    <string name="Quantity">Quantity</string>
+    <string name="daysLeft">daysLeft</string>
+    <string name="datePattern">d/M/yyyy</string>
+    <string name="Expired">Expired</string>
+    <string name="Days">days</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Add">Add</string>
+    <string name="QuantityWithColon">Quantity:</string>
+    <string name="NameWithColon">Name:</string>
+    <string name="TypeWithColon">Type:</string>
+    <string name="ExpirationDateWithColon">Expiration Date:</string>
+    <string name="AddedDateWithColon">Added Date:</string>
+    <string name="Search">Search</string>
+    <string name="Search...">Search…</string>
+    <string name="Settings">Settings</string>
+    <string name="NightMode">Night Mode</string>
+    <string name="ColorsTheme">Colors Theme</string>
+    <string name="Notifications">Notifications</string>
+    <string-array name="types">
+        <item>Vegetables</item>
+        <item>Fruits</item>
+        <item>Sweets</item>
+        <item>Animal origin</item>
+        <item>Grain products</item>
+        <item>Drinks</item>
+        <item>Spices</item>
+        <item>Meat</item>
+        <item>Others</item>
+    </string-array>
+
+
+
+
+</resources>

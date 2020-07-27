@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
@@ -93,7 +92,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         recyclerView_home.adapter = listOfProductsAdapter
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            nestedScrollView_home.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            nestedScrollView_home.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
                 if (scrollY > oldScrollY) {
                     fab.hide()
                 }
@@ -162,7 +161,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 .setView(dialogView)
             val mAlertDialog = mBuilder.show()
 
-1
 
             mAlertDialog.type_AutoCompleteTextView.setAdapter(adapter)
             calendarOnClick(dialogView, mAlertDialog)
@@ -189,8 +187,8 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             val day = c.get(Calendar.DAY_OF_MONTH)
             val dpd = DatePickerDialog(
                 this.requireActivity(),
-                DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                    val date = "" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year
+                DatePickerDialog.OnDateSetListener { _, _year, _monthOfYear, _dayOfMonth ->
+                    val date = "" + _dayOfMonth + "/" + (_monthOfYear + 1) + "/" + _year
                     mAlertDialog.date_TextInputEditText.setText(date)
                 },
                 year,

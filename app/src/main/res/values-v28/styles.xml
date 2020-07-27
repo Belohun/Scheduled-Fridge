@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextAppearance">@style/TextAppearance.TextInputLayout.HintText</item>
+
+        <!--<item name="android:paddingBottom">8dp</item>-->
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+    </style>
+</resources>
