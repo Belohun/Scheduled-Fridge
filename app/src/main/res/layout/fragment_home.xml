@@ -8,6 +8,7 @@
     android:background="@drawable/home_fragment_background"
     android:elevation="10dp">
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView_home"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scrollbars="vertical"
@@ -37,7 +38,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:listitem="@layout/product_layout"
-
       >
 
 

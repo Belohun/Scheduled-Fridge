@@ -43,7 +43,7 @@ class ListOfProductsAdapter internal constructor(val context: Context?): Recycle
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val animation = AnimationUtils.loadAnimation(context,R.anim.fade_scale)
-        val startOffsetMultiplier = 20
+        val startOffsetMultiplier = 15
         animation.startOffset = (position*startOffsetMultiplier).toLong()
         holder.itemView.animation = animation
         val current = products[position]

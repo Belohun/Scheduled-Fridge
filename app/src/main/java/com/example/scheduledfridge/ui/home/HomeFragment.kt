@@ -2,11 +2,13 @@ package com.example.scheduledfridge.ui.home
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.graphics.Canvas
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -25,6 +27,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     androidx.appcompat.widget.SearchView.OnQueryTextListener {
@@ -77,6 +80,10 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
                 currentProducts = products
                 listOfProductsAdapter!!.setProducts(products)
+                val isScrollable =isScrollable(nestedScrollView_home)
+                if(!isScrollable){
+                    fab.show()
+                }
             }
         })
         listOfProductsAdapter!!.currentProduct.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -84,6 +91,30 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         })
 
         recyclerView_home.adapter = listOfProductsAdapter
+        val isScrollable =isScrollable(nestedScrollView_home)
+        if(!isScrollable){
+            Log.d("isScrollable",isScrollable.toString())
+            fab.show()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            nestedScrollView_home.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                if (scrollY > oldScrollY) {
+                    fab.hide()
+                }
+                if (scrollY < oldScrollY) {
+                    fab.show()
+                }
+                if (scrollY == 0) {
+                   fab.show()
+                }
+              /*  if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
+                   fab.show()
+                }*/
+
+
+            })}
+
 
 
 
@@ -126,6 +157,12 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         fabOnClick(fab,categoryArrayAdapter)
         super.onViewCreated(view, savedInstanceState)
     }
+
+    private fun isScrollable(scrollView: NestedScrollView): Boolean {
+        val childHeight = scrollView.height
+        return scrollView.height < childHeight + scrollView.paddingTop + scrollView.paddingBottom
+    }
+
     private fun fabOnClick(fab: FloatingActionButton, adapter: ArrayAdapter<CharSequence>) {
         fab.setOnClickListener {
             val dialogView =

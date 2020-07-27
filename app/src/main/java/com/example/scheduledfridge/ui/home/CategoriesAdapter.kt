@@ -40,9 +40,8 @@ class CategoriesAdapter internal constructor(val context: Context?): RecyclerVie
 
     override fun onBindViewHolder(holder: CategoriesAdapter.ViewHolder, position: Int) {
         var isOn = true
-
         val current = categories[position]
-
+        holder.layout.background = context!!.getDrawable(R.drawable.category_background)
 
       holder.categoryName.text = current
 
