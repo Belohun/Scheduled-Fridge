@@ -41,17 +41,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     }
-    private fun returnCategoryList(adapter: ArrayAdapter<CharSequence>): ArrayList<String> {
-        val categories: ArrayList<String> = ArrayList()
-        val size = adapter.count
-        var i = 0
-        while(i < size){
-            categories.add(adapter.getItem(i).toString())
-            i++
-        }
-        return categories
-
-    }
 
 
 }

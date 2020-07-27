@@ -50,13 +50,13 @@ class CategoriesAdapter internal constructor(val context: Context?): RecyclerVie
               if (isOn){
                   isOn = false
                   categoriesTemp.remove(current)
-                  holder.layout.background = context!!.getDrawable(R.drawable.category_background_off)
+                  holder.layout.background = context.getDrawable(R.drawable.category_background_off)
 
 
               }else {
                   categoriesTemp.add(current)
                   isOn = true
-                  holder.layout.background = context!!.getDrawable(R.drawable.category_background)
+                  holder.layout.background = context.getDrawable(R.drawable.category_background)
 
               }
             setCurrentCategories(categoriesTemp)

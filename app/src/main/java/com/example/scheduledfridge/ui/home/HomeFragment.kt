@@ -91,11 +91,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         })
 
         recyclerView_home.adapter = listOfProductsAdapter
-        val isScrollable =isScrollable(nestedScrollView_home)
-        if(!isScrollable){
-            Log.d("isScrollable",isScrollable.toString())
-            fab.show()
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             nestedScrollView_home.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
