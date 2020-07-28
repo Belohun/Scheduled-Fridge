@@ -5,14 +5,15 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.Color
+
 import androidx.core.app.NotificationCompat
 import com.example.scheduledfridge.MainActivity
 import com.example.scheduledfridge.R
 
 
 
-private const val NOTIFICATION_ID = 0
-fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context, id:String) {
+fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context, NOTIFICATION_ID: Int,title: String) {
 
 
     val contentIntent = Intent(applicationContext, MainActivity::class.java)
@@ -24,29 +25,28 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
     )
 
 
-    val eggImage = BitmapFactory.decodeResource(
+    val bigImage = BitmapFactory.decodeResource(
         applicationContext.resources,
-        R.drawable.ic_meat
+        R.drawable.notification_drink
     )
     val bigPicStyle = NotificationCompat.BigPictureStyle()
-        .bigPicture(eggImage)
-        .bigLargeIcon(null)
-
+        .bigPicture(bigImage)
+        .bigLargeIcon(bigImage)
 
     val builder = NotificationCompat.Builder(
-        applicationContext,
-       id
+        applicationContext,applicationContext.getString(R.string.notification_chanel_id)
     )
-        .setSmallIcon(R.mipmap.ic_fridge_foreground)
-        .setContentTitle(applicationContext
-            .getString(R.string.notification_title))
+        .setSmallIcon(R.drawable.ic_fridge)
+        .setContentTitle(title)
         .setContentText(messageBody)
         .setContentIntent(contentPendingIntent)
         .setAutoCancel(true)
-        .setStyle(bigPicStyle)
-        .setLargeIcon(eggImage)
+        .setColor(Color.CYAN)
+        .setLargeIcon(bigImage)
+
         .setPriority(NotificationCompat.PRIORITY_HIGH)
-    notify(NOTIFICATION_ID, builder.build())
+        .build()
+    notify(NOTIFICATION_ID, builder)
 }
 
 fun NotificationManager.cancelNotifications() {

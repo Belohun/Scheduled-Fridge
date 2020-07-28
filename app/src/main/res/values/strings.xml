@@ -27,6 +27,8 @@
     <string name="ColorsTheme">Colors Theme</string>
     <string name="Notifications">Notifications</string>
     <string name="notification_title">Fridge</string>
+    <string name="notification_chanel_id" translatable="false">fcm_default_channel</string>
+    <string name="dataBase_name">PRODUCT_DATABASE</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>

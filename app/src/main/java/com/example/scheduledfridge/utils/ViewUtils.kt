@@ -1,6 +1,7 @@
 package com.example.scheduledfridge.utils
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -46,6 +47,43 @@ class ViewUtils {
 
 
    }
+
+fun returnIconDrawable(product: Product,context: Context): Drawable? {
+    return  when (product.productType) {
+        "Vegetables" -> {
+            return ContextCompat.getDrawable(context, R.drawable.ic_vegetables)
+        }
+        "Fruits" -> {
+            return ContextCompat.getDrawable(context, R.drawable.ic_fruits)
+        }
+        "Sweets" -> {
+            return ContextCompat.getDrawable(context, R.drawable.ic_sweets)
+        }
+        "Animal origin" -> {
+            return ContextCompat.getDrawable(context, R.drawable.ic_animal_origin)
+        }
+        "Grain products" -> {
+            return ContextCompat.getDrawable(context, R.drawable.ic_grain_products)
+        }
+        "Drinks" -> {
+            return ContextCompat.getDrawable(context, R.drawable.ic_drinks)
+        }
+        "Spices" -> {
+            return ContextCompat.getDrawable(context, R.drawable.ic_spices)
+        }
+        "Meat" -> {
+            return ContextCompat.getDrawable(context, R.drawable.ic_meat)
+        }
+
+        else -> {
+            return ContextCompat.getDrawable(context, R.drawable.ic_others)
+        }
+
+    }
+}
+
+
+
 
     @SuppressLint("NewApi")
     fun setDaysBetween(textView: TextView, context: Context, product: Product) {

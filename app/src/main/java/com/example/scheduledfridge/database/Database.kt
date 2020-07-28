@@ -1,22 +1,9 @@
 package com.example.scheduledfridge.database
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.scheduledfridge.R
 
-@Dao
-interface ProductDao{
-    @Insert
-    fun insert(product: Product)
-    @Update
-    fun update(product: Product)
-    @Delete
-    fun delete(product: Product)
-    @Query("SELECT * FROM PRODUCTS")
-    fun selectAllProducts():LiveData<List<Product>>
-    @Query("SELECT id FROM PRODUCTS")
-    fun selectAllIds():List<Int>
 
-}
 @Database(entities = [Product::class],version = 1)
 abstract class ProductDatabase: RoomDatabase(){
             abstract fun productDao(): ProductDao
@@ -29,7 +16,7 @@ abstract class ProductDatabase: RoomDatabase(){
                 return tempInstance
             }
             synchronized(this){
-                val instance = Room.databaseBuilder(context.applicationContext, ProductDatabase::class.java,"PRODUCT_DATABASE").allowMainThreadQueries().build()
+                val instance = Room.databaseBuilder(context.applicationContext, ProductDatabase::class.java,context.getString(R.string.dataBase_name)).allowMainThreadQueries().build()
                 INSTANCE= instance
                 return instance
             }

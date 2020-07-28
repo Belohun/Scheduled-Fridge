@@ -1,12 +1,16 @@
 package com.example.scheduledfridge.ui.home
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.graphics.Canvas
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -17,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
 import com.example.scheduledfridge.ui.productDetails.ProductDetailsViewModel
+import com.example.scheduledfridge.utils.sendNotification
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.add_product_layout.*
@@ -37,6 +42,8 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     private var categoriesAdapter: CategoriesAdapter? = null
     var currentProducts : List<Product> = emptyList()
     private var allProducts : List<Product> = emptyList()
+    private lateinit var  notificationManager: NotificationManager
+
 
     @SuppressLint("NewApi")
     override fun onCreateView(
@@ -46,6 +53,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     ): View? {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         setHasOptionsMenu(true)
+        createChannel(getString(R.string.notification_chanel_id),getString(R.string.notification_title))
         return root
     }
 
@@ -55,6 +63,13 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             R.array.types,
             R.layout.support_simple_spinner_dropdown_item
         )
+
+        notificationManager =
+            ContextCompat.getSystemService(
+                requireContext(),
+                NotificationManager::class.java
+            )!!
+
         listOfProductsAdapter = ListOfProductsAdapter(context)
         categoriesAdapter = CategoriesAdapter(context)
         recyclerView_Categories.adapter =categoriesAdapter
@@ -71,12 +86,15 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 categoriesAdapter!!.setCategories(categories)
             }
                 listOfProductsAdapter!!.setProducts(currentProducts)
+            val isScrollable =isScrollable(nestedScrollView_home)
+            if(!isScrollable){
+                fab.show()
+            }
         })
 
         categoriesAdapter!!.currentCategories.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if(it!=null){
                 val products = categorizeProducts(allProducts,it)
-
                 currentProducts = products
                 listOfProductsAdapter!!.setProducts(products)
                 val isScrollable =isScrollable(nestedScrollView_home)
@@ -262,6 +280,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                     ,
                     mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
                 )
+                notificationManager.sendNotification("7 days left",requireContext(),product.id,product.productName)
 
                 homeViewModel.insert(product)
                 mAlertDialog.dismiss()
@@ -279,7 +298,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
     }
     override fun onQueryTextSubmit(p0: String?): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun onQueryTextChange(p0: String?): Boolean {
@@ -299,7 +318,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         return true
     }
     override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
-        TODO("Not yet implemented")
+       return true
     }
     override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
         listOfProductsAdapter!!.setProducts(currentProducts)
@@ -324,6 +343,25 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         }
         return categories
 
+    }
+    private fun createChannel(channelId: String, channelName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
+
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+
+
+            val notificationManager = requireActivity().getSystemService(
+                NotificationManager::class.java
+            )
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
     }
 
 }

@@ -1,13 +1,14 @@
 package com.example.scheduledfridge.ui.home
-
 import android.app.Application
-import android.widget.ArrayAdapter
+import android.app.NotificationManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
-import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.ApplicationRepository
 import com.example.scheduledfridge.database.Product
 import com.example.scheduledfridge.database.ProductDatabase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
      private val repository: ApplicationRepository
@@ -17,19 +18,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
 
     init {
-        val categoryArrayAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
-            application,
-            R.array.types,
-            R.layout.support_simple_spinner_dropdown_item
-        )
          val dao = ProductDatabase.getDatabase(application).productDao()
          repository = ApplicationRepository(dao)
          allProducts = repository.allProducts
-
-
-
-
-     }
+    }
     fun insert(product: Product){
         viewModelScope.launch {
             repository.insert(product)
@@ -41,6 +33,19 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     }
+    fun scheduleNotification(){
+        val notificationManager =
+            ContextCompat.getSystemService(
+                this.getApplication(),
+                NotificationManager::class.java
+            ) as NotificationManager
+
+
+    }
+    private suspend fun saveTime(triggerTime: Long) =
+        withContext(Dispatchers.IO) {
+           // prefs.edit().putLong(TRIGGER_TIME, triggerTime).apply()
+        }
 
 
 }
