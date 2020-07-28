@@ -26,6 +26,7 @@
     <string name="NightMode">Night Mode</string>
     <string name="ColorsTheme">Colors Theme</string>
     <string name="Notifications">Notifications</string>
+    <string name="notification_title">Fridge</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>

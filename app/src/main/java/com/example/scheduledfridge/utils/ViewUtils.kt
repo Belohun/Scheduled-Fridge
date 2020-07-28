@@ -1,4 +1,4 @@
-package com.example.scheduledfridge.functions
+package com.example.scheduledfridge.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.ImageView
@@ -10,7 +10,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
-class ProductViewFunctions {
+class ViewUtils {
    fun setImage(imageView: ImageView,product: Product,context: Context) {
 
        when(product.productType){

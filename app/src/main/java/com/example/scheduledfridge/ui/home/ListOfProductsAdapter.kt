@@ -11,7 +11,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
-import com.example.scheduledfridge.functions.ProductViewFunctions
+import com.example.scheduledfridge.utils.ViewUtils
 import kotlinx.android.synthetic.main.product_layout.view.*
 
 
@@ -49,8 +49,10 @@ class ListOfProductsAdapter internal constructor(val context: Context?): Recycle
         val current = products[position]
         holder.productName.text = current.productName
         holder.quantity.text = current.quantity.toString()
-        ProductViewFunctions().setImage(holder.icon,current,context!!)
-        ProductViewFunctions().setDaysBetween(holder.daysLeft,context,current)
+        ViewUtils()
+            .setImage(holder.icon,current,context!!)
+        ViewUtils()
+            .setDaysBetween(holder.daysLeft,context,current)
         holderOnClick(holder, current)
 
     }
