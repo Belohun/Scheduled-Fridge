@@ -29,6 +29,10 @@
     <string name="notification_title">Fridge</string>
     <string name="notification_chanel_id" translatable="false">fcm_default_channel</string>
     <string name="dataBase_name">PRODUCT_DATABASE</string>
+    <string name="id">Id</string>
+    <string name="message">Message</string>
+    <string name="name">Name</string>
+    <string name="type">Type</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>

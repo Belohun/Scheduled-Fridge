@@ -1,8 +1,8 @@
 package com.example.scheduledfridge.ui.home
 import android.annotation.SuppressLint
-import android.app.DatePickerDialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.*
+import android.content.Context.ALARM_SERVICE
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
@@ -21,7 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
 import com.example.scheduledfridge.ui.productDetails.ProductDetailsViewModel
-import com.example.scheduledfridge.utils.sendNotification
+import com.example.scheduledfridge.utils.ReminderBroadcast
+import com.example.scheduledfridge.utils.ViewUtils
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.add_product_layout.*
@@ -280,7 +281,23 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                     ,
                     mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
                 )
-                notificationManager.sendNotification("7 days left",requireContext(),product.id,product.productName)
+                if(product.productExpirationDate!=""){
+                    val daysLeft = ViewUtils().getDaysLeft(product,requireContext())
+                    val intent = Intent(this.requireActivity(),ReminderBroadcast::class.java)
+                    intent.putExtra(requireContext().getString(R.string.name),product.productName)
+                    intent.putExtra(requireContext().getString(R.string.id),product.id)
+                    intent.putExtra(requireContext().getString(R.string.message),"$daysLeft days to expire!")
+                    intent.putExtra(requireContext().getString(R.string.type),product.productType)
+                    val pendingIntent = PendingIntent.getBroadcast(this.requireContext(),product.id,intent,0 )
+                    val alarmManager: AlarmManager = this.requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
+                    val timeWhenAdded = System.currentTimeMillis()
+                    val timeToBeAdded: Long = 1000 * 10
+                     alarmManager.set(AlarmManager.RTC_WAKEUP, timeWhenAdded+timeToBeAdded,pendingIntent)
+
+
+
+                }
+
 
                 homeViewModel.insert(product)
                 mAlertDialog.dismiss()
@@ -288,6 +305,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
             }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main, menu)

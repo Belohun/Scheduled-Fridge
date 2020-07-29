@@ -1,9 +1,11 @@
 package com.example.scheduledfridge.utils
-import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Build
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
@@ -48,69 +50,99 @@ class ViewUtils {
 
    }
 
-fun returnIconDrawable(product: Product,context: Context): Drawable? {
-    return  when (product.productType) {
+fun returnIconDrawable(type: String,context: Context): Bitmap? {
+    return  when (type) {
         "Vegetables" -> {
-            return ContextCompat.getDrawable(context, R.drawable.ic_vegetables)
+            return BitmapFactory.decodeResource(
+                context.resources,
+                R.drawable.notification_vegetables
+            )
         }
         "Fruits" -> {
-            return ContextCompat.getDrawable(context, R.drawable.ic_fruits)
+            return BitmapFactory.decodeResource(
+                context.resources,
+                R.drawable.notification_fruits
+            )
         }
         "Sweets" -> {
-            return ContextCompat.getDrawable(context, R.drawable.ic_sweets)
+            return BitmapFactory.decodeResource(
+                context.resources,
+                R.drawable.notification_sweets
+            )
         }
         "Animal origin" -> {
-            return ContextCompat.getDrawable(context, R.drawable.ic_animal_origin)
+            return BitmapFactory.decodeResource(
+                context.resources,
+                R.drawable.notification_animal_origin
+            )
         }
         "Grain products" -> {
-            return ContextCompat.getDrawable(context, R.drawable.ic_grain_products)
+            return BitmapFactory.decodeResource(
+                context.resources,
+                R.drawable.notification_grain_products
+            )
         }
         "Drinks" -> {
-            return ContextCompat.getDrawable(context, R.drawable.ic_drinks)
+            return BitmapFactory.decodeResource(
+                context.resources,
+                R.drawable.notification_drink
+            )
         }
         "Spices" -> {
-            return ContextCompat.getDrawable(context, R.drawable.ic_spices)
+            return BitmapFactory.decodeResource(
+                context.resources,
+                R.drawable.notification_spieces
+            )
         }
         "Meat" -> {
-            return ContextCompat.getDrawable(context, R.drawable.ic_meat)
+            return BitmapFactory.decodeResource(
+                context.resources,
+                R.drawable.notification_meat
+            )
         }
-
         else -> {
-            return ContextCompat.getDrawable(context, R.drawable.ic_others)
+                return BitmapFactory.decodeResource(
+                    context.resources,
+                    R.drawable.notification_others
+                )
         }
 
     }
 }
 
 
-
-
-    @SuppressLint("NewApi")
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setDaysBetween(textView: TextView, context: Context, product: Product) {
-        val formatter = DateTimeFormatter.ofPattern(context.getString(R.string.datePattern))
-        val today= LocalDate.now()
-        val daysBetween: Long
+        val daysLeft: Long
         val texViewText: String
         if(product.productExpirationDate==""){
             texViewText=""
         }else{
-            val toDate = LocalDate.parse(product.productExpirationDate,formatter)
-            daysBetween = ChronoUnit.DAYS.between(today,toDate)
-            if(daysBetween<=0){
+
+            daysLeft = getDaysLeft(product,context)
+            if(daysLeft<=0){
                 texViewText = context.getString(R.string.Expired)
 
                textView.setTextColor(ContextCompat.getColor(context,R.color.colorExpired))
             }else  {
-                if(daysBetween<=3){
+                if(daysLeft<=3){
                     textView.setTextColor(ContextCompat.getColor(context,R.color.colorGoingToExpire))
                 }else{
                     textView.setTextColor(ContextCompat.getColor(context,R.color.colorFresh))
                 }
-                 texViewText = daysBetween.toString()+ " " + context.getString(R.string.Days)
+                 texViewText = daysLeft.toString()+ " " + context.getString(R.string.Days)
             }
         }
         textView.text= texViewText
 
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getDaysLeft(product: Product, context: Context): Long {
+        val formatter =
+            DateTimeFormatter.ofPattern(context.getString(R.string.datePattern))
+        val toDate = LocalDate.parse(product.productExpirationDate, formatter)
+        val today = LocalDate.now()
+        return ChronoUnit.DAYS.between(today, toDate)
     }
 
 

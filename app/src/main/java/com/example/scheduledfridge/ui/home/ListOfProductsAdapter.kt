@@ -1,9 +1,11 @@
 package com.example.scheduledfridge.ui.home
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -41,6 +43,7 @@ class ListOfProductsAdapter internal constructor(val context: Context?): Recycle
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val animation = AnimationUtils.loadAnimation(context,R.anim.fade_scale)
         val startOffsetMultiplier = 15

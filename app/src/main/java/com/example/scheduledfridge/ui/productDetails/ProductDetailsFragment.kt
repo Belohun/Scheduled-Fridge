@@ -1,9 +1,11 @@
 package com.example.scheduledfridge.ui.productDetails
+import android.os.Build
 import android.os.Bundle
 import androidx.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -32,6 +34,7 @@ class ProductDetailsFragment : Fragment() {
         return root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         productDetailsViewModel.currentProduct.observe(viewLifecycleOwner, Observer {
             setProductDetailsViews(it)
@@ -40,6 +43,7 @@ class ProductDetailsFragment : Fragment() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setProductDetailsViews(it: Product) {
         if (it != null) {
             productName_TextView_product_details.text = it.productName
