@@ -230,13 +230,14 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             val formatted = current.format(formatter)
             var noErrors = true
             when {
+
                 dialogView.add_product_name_text.text!!.length > 26 -> {
                     noErrors=false
-                    dialogView.add_product_name_text.error="Name should be max length of 26 characters!"
+                    dialogView.add_product_name_text.error= requireContext().getString(R.string.max26Char)
                 }
                 dialogView.add_product_name_text.text!!.isEmpty() -> {
                     noErrors=false
-                    dialogView.add_product_name_text.error="Field must not be empty!"
+                    dialogView.add_product_name_text.error=requireContext().getString(R.string.fieldMustNotBeEmpty)
                 }
                 else -> {
                     dialogView.add_product_name_text.error = null
@@ -245,12 +246,12 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             when {
                 dialogView.quantity_TextInputEditText.text!!.isEmpty() -> {
                     noErrors=false
-                    dialogView.quantity_TextInputEditText.error="Field must not be empty!"
+                    dialogView.quantity_TextInputEditText.error=requireContext().getString(R.string.fieldMustNotBeEmpty)
 
                 }
                 dialogView.quantity_TextInputEditText.text!!.length > 5 -> {
                     noErrors=false
-                    dialogView.quantity_TextInputEditText.error="Name should be max length of 5 characters!"
+                    dialogView.quantity_TextInputEditText.error=requireContext().getString(R.string.quantityMax5Char)
                 }
                 else -> {
                     dialogView.quantity_TextInputEditText.error = null
@@ -258,7 +259,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             }
             if( dialogView.type_AutoCompleteTextView!!.text.isEmpty()){
                 noErrors=false
-                dialogView.type_AutoCompleteTextView.error ="Select one of types!"
+                dialogView.type_AutoCompleteTextView.error =requireContext().getString(R.string.selectOneOfTypes)
             }
             else {
                 dialogView.type_AutoCompleteTextView.error = null

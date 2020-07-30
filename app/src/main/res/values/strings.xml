@@ -37,6 +37,10 @@
     <string name="daysLeftToExpire">days left to expire!</string>
     <string name="notificationEnabled">notificationEnabled</string>
     <string name="nightMode">NightMode</string>
+    <string name="max26Char">Name should be max length of 26 characters!</string>
+    <string name="fieldMustNotBeEmpty">"Field must not be empty "</string>
+    <string name="quantityMax5Char">Quantity should be max length of 5 numbers!</string>
+    <string name="selectOneOfTypes">Select one of types!</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>
