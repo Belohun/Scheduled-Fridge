@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.utils.Preferences
@@ -24,11 +25,7 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val preferences = Preferences(requireContext())
         val isDark = preferences.getMode()
-        if(isDark){
-            switchMaterial_nightMode_settings.isChecked = true
-        }else if(!isDark){
-            switchMaterial_nightMode_settings.isChecked = false
-        }
+        switchMaterial_nightMode_settings.isChecked = isDark
 
         switchMaterial_nightMode_settings.setOnCheckedChangeListener{_, isChecked ->
             if(isChecked){
@@ -40,6 +37,20 @@ class SettingsFragment : Fragment() {
                 preferences.setMode(false)
             }
 
+        }
+
+        val isNotificationEnabled = preferences.getNotificationSetting()
+        switchMaterial_notification_settings.isChecked = isNotificationEnabled
+
+        switchMaterial_notification_settings.setOnCheckedChangeListener{_,isChecked ->
+            if (isChecked){
+                preferences.setNotifications(true)
+                NotificationManagerCompat.from(requireContext()).cancelAll()
+
+            }else{
+                preferences.setNotifications(false)
+
+            }
         }
 
         super.onViewCreated(view, savedInstanceState)

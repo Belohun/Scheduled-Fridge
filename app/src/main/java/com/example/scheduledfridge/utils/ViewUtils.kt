@@ -136,6 +136,8 @@ fun returnIconDrawable(type: String,context: Context): Bitmap? {
         textView.text= texViewText
 
     }
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun getDaysLeft(expirationDate: String, context: Context): Long {
         val formatter =

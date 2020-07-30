@@ -35,6 +35,8 @@
     <string name="type">Type</string>
     <string name="notification_group_id">PRODUCT_GROUP</string>
     <string name="daysLeftToExpire">days left to expire!</string>
+    <string name="notificationEnabled">notificationEnabled</string>
+    <string name="nightMode">NightMode</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>
