@@ -33,6 +33,8 @@
     <string name="message">Message</string>
     <string name="name">Name</string>
     <string name="type">Type</string>
+    <string name="notification_group_id">PRODUCT_GROUP</string>
+    <string name="daysLeftToExpire">days left to expire!</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>

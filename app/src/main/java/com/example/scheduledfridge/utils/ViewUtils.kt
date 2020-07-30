@@ -119,7 +119,7 @@ fun returnIconDrawable(type: String,context: Context): Bitmap? {
             texViewText=""
         }else{
 
-            daysLeft = getDaysLeft(product,context)
+            daysLeft = getDaysLeft(product.productExpirationDate,context)
             if(daysLeft<=0){
                 texViewText = context.getString(R.string.Expired)
 
@@ -137,10 +137,10 @@ fun returnIconDrawable(type: String,context: Context): Bitmap? {
 
     }
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getDaysLeft(product: Product, context: Context): Long {
+    fun getDaysLeft(expirationDate: String, context: Context): Long {
         val formatter =
             DateTimeFormatter.ofPattern(context.getString(R.string.datePattern))
-        val toDate = LocalDate.parse(product.productExpirationDate, formatter)
+        val toDate = LocalDate.parse(expirationDate, formatter)
         val today = LocalDate.now()
         return ChronoUnit.DAYS.between(today, toDate)
     }
