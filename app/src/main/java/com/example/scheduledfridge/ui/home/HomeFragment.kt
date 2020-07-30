@@ -1,14 +1,10 @@
 package com.example.scheduledfridge.ui.home
 import android.annotation.SuppressLint
 import android.app.*
-import android.content.Context
-import android.content.Context.ALARM_SERVICE
-import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
@@ -23,8 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
 import com.example.scheduledfridge.ui.productDetails.ProductDetailsViewModel
-import com.example.scheduledfridge.utils.ReminderBroadcast
-import com.example.scheduledfridge.utils.ViewUtils
+import com.example.scheduledfridge.utils.cancelNotification
+import com.example.scheduledfridge.utils.generateNotification
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.add_product_layout.*
@@ -146,9 +142,11 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 when(direction){
                     ItemTouchHelper.LEFT ->{
                         homeViewModel.delete(currentProducts[position])
+                        cancelNotification(requireContext(),currentProducts[position].id)
                     }
                     RIGHT ->{
                         homeViewModel.delete(currentProducts[position])
+                        cancelNotification(requireContext(),currentProducts[position].id)
                     }
 
                 }
@@ -284,15 +282,8 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                     mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
                 )
                 if(product.productExpirationDate!=""){
-
-                   generateNotification(product,requireContext())
-
-
-
-
+                 generateNotification(product.id,product.productExpirationDate,product.productName,product.productType,requireContext())
                 }
-
-
                 homeViewModel.insert(product)
                 mAlertDialog.dismiss()
             }
@@ -300,54 +291,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             }
     }
 
-    @SuppressLint("NewApi")
-    private fun generateNotification(
-        product: Product,
-        context: Context
-    ) {
-        val id =  product.id
-        val daysLeft = ViewUtils().getDaysLeft(product.productExpirationDate, requireContext())
-        val listOfScheduledNotification = mutableListOf<Int>(0,1,2,3)
-        val listOfScheduledNotificationSorted =listOfScheduledNotification.sorted()
-        val listOfScheduledNotificationSortedReversed = listOfScheduledNotificationSorted.reversed()
-        Log.d("reversed",listOfScheduledNotificationSortedReversed.toString())
-        for (i in listOfScheduledNotificationSorted ){
-            if(i == daysLeft.toInt()){
-                val currentDate = System.currentTimeMillis()
-                val millsInDay = 86400000
-                val timeToBeAdded: Long = millsInDay * (daysLeft - i)
-                val timeToBeAddedTemp = 1000 * 10 * i
-                if (timeToBeAdded <= 0){
-                }else {
-                    val message: String
-                    val daysLeftAtNotificationTime = daysLeft - i
-                    Log.d("daysLeft", daysLeftAtNotificationTime.toString())
-                    message = if(daysLeftAtNotificationTime<1){
-                        context.getString(R.string.Expired)
-                    }else {
-                        (daysLeft - i).toString() + " " + context.getString(R.string.daysLeftToExpire)
-                    }
-                    val intent = Intent(this.requireActivity(), ReminderBroadcast::class.java)
-                    intent.putExtra(requireContext().getString(R.string.name), product.productName)
-                    intent.putExtra(requireContext().getString(R.string.id), product.id)
-                    intent.putExtra(requireContext().getString(R.string.message), message)
-                    intent.putExtra(requireContext().getString(R.string.type), product.productType)
-                    val alarmManager: AlarmManager = this.requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
-                    val pendingIntent = PendingIntent.getBroadcast(this.requireContext(), id, intent, 0)
-                    alarmManager.set(
-                        AlarmManager.RTC_WAKEUP,
-                        currentDate + timeToBeAddedTemp,
-                        pendingIntent
-                    )
-                }
 
-            }
-
-
-
-        }
-
-    }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

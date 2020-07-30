@@ -1,4 +1,5 @@
 package com.example.scheduledfridge.utils
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.example.scheduledfridge.R
 
 class ReminderBroadcast: BroadcastReceiver() {
+    @SuppressLint("NewApi")
     override fun onReceive(context: Context?, intent: Intent?) {
 
         val notificationManager = ContextCompat.getSystemService(
@@ -17,9 +19,15 @@ class ReminderBroadcast: BroadcastReceiver() {
         val name = intent.getStringExtra(context.getString(R.string.name))
         val message = intent.getStringExtra(context.getString(R.string.message))
         val type = intent.getStringExtra(context.getString(R.string.type))
+        val expirationDate = intent.getStringExtra(context.getString(R.string.ExpirationDate))!!
         val image = ViewUtils().returnIconDrawable(type!!,context)
+
         notificationManager.sendNotification(message!!,context,id,name!!,image!!)
 
+        val daysLeft = ViewUtils().getDaysLeft(expirationDate,context)
+        if(daysLeft > 0) {
+            generateNotification(id, expirationDate, name, type, context)
+        }
 
     }
 }

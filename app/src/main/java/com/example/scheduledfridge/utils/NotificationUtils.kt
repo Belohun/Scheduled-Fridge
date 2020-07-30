@@ -1,10 +1,13 @@
 package com.example.scheduledfridge.utils
+import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.scheduledfridge.MainActivity
 import com.example.scheduledfridge.R
@@ -50,4 +53,53 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
     notify(ID, builder)
     notify(0,group)
 }
+@SuppressLint("NewApi")
 
+fun generateNotification(
+    id: Int,
+    productExpirationDate: String,
+    productName: String,
+    productType: String,
+    context: Context
+) {
+    val listOfScheduledNotification = mutableListOf(0,1,2,3)
+    val listOfScheduledNotificationSorted =listOfScheduledNotification.sorted()
+    val listOfScheduledNotificationSortedReversed = listOfScheduledNotificationSorted.reversed()
+    val daysLeft = ViewUtils().getDaysLeft(productExpirationDate, context)
+
+    for (i in listOfScheduledNotificationSortedReversed ){
+        if(i == daysLeft.toInt()){
+            val currentDate = System.currentTimeMillis()
+            val millsInDay = 86400000
+            val timeToBeAdded: Long = millsInDay * daysLeft
+            val timeToBeAddedTemp = 1000 * 5
+            Log.d("daysLeft", daysLeft.toString())
+            val message: String = if(daysLeft <1){
+                    context.getString(R.string.Expired)
+                }else {
+                    (daysLeft - i).toString() + " " + context.getString(R.string.daysLeftToExpire)
+            }
+            val intent = Intent(context, ReminderBroadcast::class.java)
+            intent.putExtra(context.getString(R.string.name),productName)
+            intent.putExtra(context.getString(R.string.id),id)
+            intent.putExtra(context.getString(R.string.message), message)
+            intent.putExtra(context.getString(R.string.type), productType)
+            intent.putExtra(context.getString(R.string.ExpirationDate),productExpirationDate)
+            val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0)
+            alarmManager.set(
+                    AlarmManager.RTC_WAKEUP,
+                    currentDate + timeToBeAddedTemp,
+                    pendingIntent
+                )
+        }
+
+
+
+    }
+
+}
+fun cancelNotification(context: Context,id:Int){
+    val intent = Intent(context, ReminderBroadcast::class.java)
+    PendingIntent.getBroadcast(context,id,intent,PendingIntent.FLAG_UPDATE_CURRENT).cancel()
+}
