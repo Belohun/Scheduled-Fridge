@@ -22,11 +22,16 @@ class ReminderBroadcast: BroadcastReceiver() {
         val expirationDate = intent.getStringExtra(context.getString(R.string.ExpirationDate))!!
         val image = ViewUtils().returnIconDrawable(type!!,context)
 
-        notificationManager.sendNotification(message!!,context,id,name!!,image!!)
+        val preferences =Preferences(context)
+        val isNotificationEnabled = preferences.getNotificationSetting()
+        if(isNotificationEnabled) {
+            notificationManager.sendNotification(message!!, context, id, name!!, image!!)
+        }
+
 
         val daysLeft = ViewUtils().getDaysLeft(expirationDate,context)
         if(daysLeft > 0) {
-            generateNotification(id, expirationDate, name, type, context)
+            generateNotification(id, expirationDate, name!!, type, context)
         }
 
     }
