@@ -1,13 +1,10 @@
 package com.example.scheduledfridge.ui.settings
 import android.os.Bundle
-import android.util.Log
-import android.view.FocusFinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.scheduledfridge.R

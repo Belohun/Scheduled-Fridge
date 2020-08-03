@@ -1,6 +1,8 @@
 package com.example.scheduledfridge.ui.home
 import android.annotation.SuppressLint
-import android.app.*
+import android.app.DatePickerDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
@@ -25,6 +27,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.add_product_layout.*
 import kotlinx.android.synthetic.main.add_product_layout.view.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -53,15 +56,23 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         setHasOptionsMenu(true)
         createChannel(getString(R.string.notification_chanel_id),getString(R.string.notification_title))
+
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         val categoryArrayAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.types,
             R.layout.support_simple_spinner_dropdown_item
         )
+        val sortByArrayAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.sortBy,
+            R.layout.support_simple_spinner_dropdown_item
+        )
+        autoCompleteView_sortBy.setAdapter(sortByArrayAdapter)
 
         notificationManager =
             ContextCompat.getSystemService(
@@ -368,6 +379,16 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             )
             notificationManager.createNotificationChannel(notificationChannel)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+    requireActivity().appBar_layout.elevation = 8F
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireActivity().appBar_layout.elevation = 0F
     }
 
 }
