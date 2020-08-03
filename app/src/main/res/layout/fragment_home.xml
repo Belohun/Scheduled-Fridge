@@ -5,14 +5,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment"
-    android:background="@drawable/home_fragment_background"
-    android:elevation="10dp">
+    android:background="@drawable/home_fragment_background">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:elevation="4dp"
+        android:background="@color/background"
+        android:id="@+id/layout_bellow_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <TextView
+           android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/layout_autoCompleteView_sortBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MdcTypographyStyles.Subtitle2"
+            android:text="@string/sortBy"/>
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxStrokeColor="@color/background"
+            android:id="@+id/layout_autoCompleteView_sortBy"
+            app:boxBackgroundColor="@color/background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_percent="0.47"
+            android:layout_height="55dp"
+            android:textColorHint="@color/colorText"
+            >
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+           android:id="@+id/autoCompleteView_sortBy"
+
+            android:text="By added date"
+            android:background="@null"
+            style="@style/TextAppearance.MdcTypographyStyles.Subtitle3"
+            android:inputType="none"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView_home"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scrollbars="vertical"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_bellow_toolbar"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
