@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ApplicationRepository
-    val allProducts: LiveData<List<Product>>
+    var allProducts: LiveData<List<Product>>
 
 
     init {

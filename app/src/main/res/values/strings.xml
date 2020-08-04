@@ -45,6 +45,8 @@
     <string name="howManyDaysBefore">How many days before expiration</string>
     <string name="atWhatTime">At what time</string>
     <string name="sortBy">Sort by:</string>
+    <string name="appPreferences">AppPreferences</string>
+    <string name="sortingSelected">SortingSelected</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>
@@ -63,7 +65,7 @@
         <item>Shorted shelf life last</item>
         <item>Name A-Z</item>
         <item>Name Z-A</item>
-        <item>Types</item>
+        <item>Types </item>
     </string-array>
 
 

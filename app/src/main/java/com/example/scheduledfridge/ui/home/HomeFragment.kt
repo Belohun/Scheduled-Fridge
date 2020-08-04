@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
@@ -23,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
 import com.example.scheduledfridge.ui.productDetails.ProductDetailsViewModel
+import com.example.scheduledfridge.utils.Preferences
 import com.example.scheduledfridge.utils.cancelNotification
 import com.example.scheduledfridge.utils.generateNotification
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -31,11 +31,11 @@ import kotlinx.android.synthetic.main.add_product_layout.*
 import kotlinx.android.synthetic.main.add_product_layout.view.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
-
 
 class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     androidx.appcompat.widget.SearchView.OnQueryTextListener {
@@ -48,8 +48,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     private var allProducts : List<Product> = emptyList()
     private lateinit var  notificationManager: NotificationManager
     private var  sortByArrayAdapter: ArrayAdapter<CharSequence>? = null
-
-    @SuppressLint("NewApi")
+    private var preferences: Preferences? = null
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -67,16 +66,17 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        preferences = Preferences(requireContext())
         autoCompleteView_sortBy.setAdapter(sortByArrayAdapter)
-        autoCompleteView_sortBy.onItemClickListener = object : AdapterView.OnItemClickListener {
-            override fun onItemClick(
-                parent: AdapterView<*>?, arg1: View?, pos: Int,
-                id: Long
-            ) {
-               val text = autoCompleteView_sortBy.text
-                Toast.makeText(requireContext(), " selected $text ", Toast.LENGTH_LONG).show()
+        val sortingOptionSaved = preferences!!.getSorting()
+        autoCompleteView_sortBy.setText(sortingOptionSaved)
+
+        autoCompleteView_sortBy.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, pos, _ ->
+                val sortOptionsList = resources.getStringArray(R.array.sortBy)
+                val current = sortOptionsList[pos]
+                sortProducts(current)
             }
-        }
         val categoryArrayAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.types,
@@ -111,6 +111,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             if(!isScrollable){
                 fab.show()
             }
+            sortProducts(sortingOptionSaved)
         })
 
         categoriesAdapter!!.currentCategories.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -248,7 +249,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         dialogView.btn_add.setOnClickListener {
 
             val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            val formatter = DateTimeFormatter.ofPattern(requireContext().getString(R.string.datePattern))
             val formatted = current.format(formatter)
             var noErrors = true
             when {
@@ -290,7 +291,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             val id: Int = if (allProducts.isEmpty()) {
                 1
             } else {
-                allProducts.last().id + 1
+                allProducts.maxBy{ it.id }!!.id + 1
             }
 
 
@@ -390,6 +391,85 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             )
             notificationManager.createNotificationChannel(notificationChannel)
         }
+    }
+    @SuppressLint("NewApi")
+    private fun sortProducts(sortingOption: String) {
+        val sortOptionsList = resources.getStringArray(R.array.sortBy)
+        val dateTimeFormatter: DateTimeFormatter =
+            DateTimeFormatter.ofPattern(requireContext().getString(R.string.datePattern))
+        var tempList: List<Product> = emptyList()
+        val tempListWithNullDates: ArrayList<Product> = ArrayList()
+        val tempListWithoutNullDates: ArrayList<Product> = ArrayList()
+        preferences = Preferences(requireContext())
+        fun divideAllProducts() {
+            allProducts.forEach {
+                if (it.productExpirationDate == "") {
+                    tempListWithNullDates.add(it)
+                } else {
+                    tempListWithoutNullDates.add(it)
+                }
+            }
+
+        }
+        when (sortingOption) {
+            sortOptionsList[0] -> {
+                tempList = allProducts.sortedByDescending {
+                    LocalDate.parse(
+                        it.productAdedDate,
+                        dateTimeFormatter
+                    )
+                }.asReversed()
+
+            }
+            sortOptionsList[1] -> {
+                tempList = allProducts.sortedByDescending {
+                    LocalDate.parse(
+                        it.productAdedDate,
+                        dateTimeFormatter
+                    )
+                }
+
+            }
+            sortOptionsList[2] -> {
+                divideAllProducts()
+                val localTempList: ArrayList<Product> = ArrayList()
+                localTempList.addAll(tempListWithoutNullDates.sortedByDescending {
+                    LocalDate.parse(
+                        it.productExpirationDate,
+                        dateTimeFormatter
+                    )
+                }.asReversed())
+                localTempList.addAll(tempListWithNullDates)
+                tempList = localTempList
+            }
+            sortOptionsList[3] -> {
+                divideAllProducts()
+                val localTempList: ArrayList<Product> = ArrayList()
+                localTempList.addAll(tempListWithNullDates)
+                localTempList.addAll(tempListWithoutNullDates.sortedByDescending {
+                    LocalDate.parse(
+                        it.productExpirationDate,
+                        dateTimeFormatter
+                    )
+                })
+                tempList = localTempList
+            }
+            sortOptionsList[4] -> {
+                tempList =
+                    allProducts.sortedByDescending { it.productName }.asReversed()
+            }
+            sortOptionsList[5] -> {
+                tempList = allProducts.sortedByDescending { it.productName }
+
+            }
+            sortOptionsList[6] -> {
+                tempList = allProducts.sortedBy { it.productType }
+            }
+
+        }
+        preferences!!.setSorting(sortingOption)
+        allProducts = tempList
+        listOfProductsAdapter!!.setProducts(tempList)
     }
 
     override fun onStop() {
