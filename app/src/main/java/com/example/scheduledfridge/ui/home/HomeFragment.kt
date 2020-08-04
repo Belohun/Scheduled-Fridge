@@ -8,7 +8,9 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
@@ -45,7 +47,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     var currentProducts : List<Product> = emptyList()
     private var allProducts : List<Product> = emptyList()
     private lateinit var  notificationManager: NotificationManager
-
+    private var  sortByArrayAdapter: ArrayAdapter<CharSequence>? = null
 
     @SuppressLint("NewApi")
     override fun onCreateView(
@@ -56,23 +58,32 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         setHasOptionsMenu(true)
         createChannel(getString(R.string.notification_chanel_id),getString(R.string.notification_title))
-
+            sortByArrayAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.sortBy,
+            R.layout.support_simple_spinner_dropdown_item
+        )
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        autoCompleteView_sortBy.setAdapter(sortByArrayAdapter)
+        autoCompleteView_sortBy.onItemClickListener = object : AdapterView.OnItemClickListener {
+            override fun onItemClick(
+                parent: AdapterView<*>?, arg1: View?, pos: Int,
+                id: Long
+            ) {
+               val text = autoCompleteView_sortBy.text
+                Toast.makeText(requireContext(), " selected $text ", Toast.LENGTH_LONG).show()
+            }
+        }
         val categoryArrayAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.types,
             R.layout.support_simple_spinner_dropdown_item
         )
-        val sortByArrayAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.sortBy,
-            R.layout.support_simple_spinner_dropdown_item
-        )
-        autoCompleteView_sortBy.setAdapter(sortByArrayAdapter)
+
+
 
         notificationManager =
             ContextCompat.getSystemService(
@@ -389,6 +400,17 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     override fun onStart() {
         super.onStart()
         requireActivity().appBar_layout.elevation = 0F
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sortByArrayAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.sortBy,
+            R.layout.support_simple_spinner_dropdown_item
+        )
+        autoCompleteView_sortBy.setAdapter(sortByArrayAdapter)
     }
 
 }
