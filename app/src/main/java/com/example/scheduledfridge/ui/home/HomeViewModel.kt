@@ -10,15 +10,15 @@ import kotlinx.coroutines.launch
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ApplicationRepository
     var allProducts: LiveData<List<Product>>
-    val isSelectedMode = MutableLiveData<Boolean>()
-    val selectedProducts = MutableLiveData<List<Product>>()
+    val isSelectingMode = MutableLiveData<Boolean>()
+    val selectedProducts = MutableLiveData<ArrayList<Product>>()
 
 
     init {
         val dao = ProductDatabase.getDatabase(application).productDao()
         repository = ApplicationRepository(dao)
         allProducts = repository.allProducts
-        isSelectedMode.value = false
+        isSelectingMode.value = false
     }
 
     fun insert(product: Product) {
@@ -33,11 +33,21 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     }
-    fun setSelectedMode (isSelected: Boolean){
-        isSelectedMode.value = isSelected
+    fun setSelectingMode (isSelected: Boolean){
+        isSelectingMode.value = isSelected
     }
-    fun setSelectedProducts(products: List<Product>){
+    fun getSelectingMode(): Boolean{
+        return isSelectingMode.value!!
+    }
+    fun setSelectedProducts(products: ArrayList<Product>){
         selectedProducts.value = products
+    }
+    fun getSelectedProducts(): ArrayList<Product>{
+        return if(selectedProducts.value != null) {
+            selectedProducts.value!!
+        }else{
+            ArrayList()
+        }
     }
 }
 
