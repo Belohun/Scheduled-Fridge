@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
@@ -17,10 +18,11 @@ import com.example.scheduledfridge.utils.ViewUtils
 import kotlinx.android.synthetic.main.product_layout.view.*
 
 
-class ListOfProductsAdapter internal constructor(val context: Context?): RecyclerView.Adapter<ListOfProductsAdapter.ViewHolder>() {
+class ListOfProductsAdapter internal constructor(val context: Context?,val homeViewModel: HomeViewModel): RecyclerView.Adapter<ListOfProductsAdapter.ViewHolder>() {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var products = emptyList<Product>()
     private var navController: NavController?=null
+
      val currentProduct = MutableLiveData<Product>()
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -45,6 +47,7 @@ class ListOfProductsAdapter internal constructor(val context: Context?): Recycle
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val isSelectedMode = false
         val animation = AnimationUtils.loadAnimation(context,R.anim.fade_scale)
         val startOffsetMultiplier = 15
         animation.startOffset = (position*startOffsetMultiplier).toLong()
@@ -57,6 +60,11 @@ class ListOfProductsAdapter internal constructor(val context: Context?): Recycle
         ViewUtils()
             .setDaysBetween(holder.daysLeft,context,current)
         holderOnClick(holder, current)
+        holder.itemView.setOnLongClickListener {
+
+            it.background = context.getDrawable(R.drawable.product_background_selected)
+            true
+        }
 
     }
 
@@ -65,6 +73,7 @@ class ListOfProductsAdapter internal constructor(val context: Context?): Recycle
             holder.icon.transitionName = current.id.toString()
             holder.daysLeft.transitionName = current.id.toString() + context!!.getString(R.string.daysLeft)
             val extras = FragmentNavigatorExtras(
+
                 holder.icon to current.id.toString(),
                 holder.daysLeft to current.id.toString() + context.getString(R.string.daysLeft)
             )

@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
@@ -66,6 +67,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        homeViewModel.setSelectedMode(false)
         preferences = Preferences(requireContext())
         autoCompleteView_sortBy.setAdapter(sortByArrayAdapter)
         val sortingOptionSaved = preferences!!.getSorting()
@@ -91,10 +93,12 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 NotificationManager::class.java
             )!!
 
-        listOfProductsAdapter = ListOfProductsAdapter(context)
+        listOfProductsAdapter = ListOfProductsAdapter(context,homeViewModel)
         categoriesAdapter = CategoriesAdapter(context)
         recyclerView_Categories.adapter =categoriesAdapter
-
+    homeViewModel.isSelectedMode.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        Toast.makeText(context,it.toString(),Toast.LENGTH_LONG).show()
+    })
 
 
         homeViewModel.allProducts.observe(viewLifecycleOwner, androidx.lifecycle.Observer {

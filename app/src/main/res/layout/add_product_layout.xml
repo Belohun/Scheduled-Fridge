@@ -118,7 +118,7 @@
             android:hint="@string/Type">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:background="@color/background"
+                android:background="@color/colorBackground"
                 android:textColor="@color/colorText"
                 android:id="@+id/type_AutoCompleteTextView"
                 android:inputType="none"
