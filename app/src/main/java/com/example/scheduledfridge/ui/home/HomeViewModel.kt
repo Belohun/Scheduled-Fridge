@@ -11,7 +11,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ApplicationRepository
     var allProducts: LiveData<List<Product>>
     val isSelectingMode = MutableLiveData<Boolean>()
-    val selectedProducts = MutableLiveData<ArrayList<Product>>()
+    private val selectedProducts = MutableLiveData<ArrayList<Product>>()
 
 
     init {

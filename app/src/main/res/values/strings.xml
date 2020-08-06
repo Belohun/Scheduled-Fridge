@@ -47,6 +47,7 @@
     <string name="sortBy">Sort by:</string>
     <string name="appPreferences">AppPreferences</string>
     <string name="sortingSelected">SortingSelected</string>
+    <string name="delete">delete</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>

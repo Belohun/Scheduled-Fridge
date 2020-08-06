@@ -1,6 +1,7 @@
 package com.example.scheduledfridge.ui.home
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,16 +47,26 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var isSelected: Boolean = false
+
+        val current = products[position]
+        var isSelected: Boolean
         var isSelectedMode:Boolean
         val animation = AnimationUtils.loadAnimation(context,R.anim.fade_scale)
         val startOffsetMultiplier = 15
         animation.startOffset = (position*startOffsetMultiplier).toLong()
         holder.itemView.animation = animation
-        val current = products[position]
+        val selectedProducts = homeViewModel.getSelectedProducts()
+        if(selectedProducts.contains(current)){
+            Log.d("Contains",current.productName)
+            holder.itemView.background = context!!.getDrawable(R.drawable.product_background_selected)
+            isSelected= true
+        }else{
+            holder.itemView.background = context!!.getDrawable(R.drawable.product_background)
+            isSelected= false
+        }
         holder.productName.text = current.productName
         holder.quantity.text = current.quantity.toString()
-        ViewUtils().setImage(holder.icon,current,context!!)
+        ViewUtils().setImage(holder.icon,current, context)
         ViewUtils().setDaysBetween(holder.daysLeft,context,current)
         holder.itemView.setOnClickListener {
             isSelectedMode = homeViewModel.getSelectingMode()
@@ -85,6 +96,7 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
             }
 
         }
+
         holder.itemView.setOnLongClickListener {
             val selectedProducts = homeViewModel.getSelectedProducts()
             if(isSelected){
@@ -96,7 +108,10 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
 
                 isSelectedMode = homeViewModel.getSelectingMode()
                 it.background = context.getDrawable(R.drawable.product_background_selected)
-                homeViewModel.setSelectingMode(true)
+                if(!homeViewModel.getSelectingMode()){
+                    homeViewModel.setSelectingMode(true)
+
+                }
                 isSelected = true
                 selectedProducts.add(current)
             }

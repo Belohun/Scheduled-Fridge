@@ -7,7 +7,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -50,6 +49,9 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     private lateinit var  notificationManager: NotificationManager
     private var  sortByArrayAdapter: ArrayAdapter<CharSequence>? = null
     private var preferences: Preferences? = null
+     var actionMode: ActionMode? = null
+    private var actionModeCallback: ActionModeCallback? = null
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -57,7 +59,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     ): View? {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         setHasOptionsMenu(true)
-        createChannel(getString(R.string.notification_chanel_id),getString(R.string.notification_title))
+        createNotificationChannel(getString(R.string.notification_chanel_id),getString(R.string.notification_title))
             sortByArrayAdapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.sortBy,
@@ -67,6 +69,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        actionModeCallback = ActionModeCallback()
         homeViewModel.setSelectingMode(false)
         preferences = Preferences(requireContext())
         autoCompleteView_sortBy.setAdapter(sortByArrayAdapter)
@@ -94,13 +97,16 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             )!!
 
         listOfProductsAdapter = ListOfProductsAdapter(context,homeViewModel)
+
         categoriesAdapter = CategoriesAdapter(context)
         recyclerView_Categories.adapter =categoriesAdapter
-        homeViewModel.selectedProducts.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.d("selectedProducts",it.toString())
-
+        homeViewModel.isSelectingMode.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            actionMode = if(it==false){
+                null
+            }else {
+                requireActivity().startActionMode(actionModeCallback)
+            }
         })
-
         homeViewModel.allProducts.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             currentProducts=it
             allProducts=it
@@ -168,12 +174,10 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 val position = viewHolder.adapterPosition
                 when(direction){
                     ItemTouchHelper.LEFT ->{
-                        homeViewModel.delete(currentProducts[position])
-                        cancelNotification(requireContext(),currentProducts[position].id)
+                        deleteProduct(currentProducts[position])
                     }
                     RIGHT ->{
-                        homeViewModel.delete(currentProducts[position])
-                        cancelNotification(requireContext(),currentProducts[position].id)
+                        deleteProduct(currentProducts[position])
                     }
 
                 }
@@ -377,7 +381,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         return categories
 
     }
-    private fun createChannel(channelId: String, channelName: String) {
+    private fun createNotificationChannel(channelId: String, channelName: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 channelId,
@@ -495,6 +499,49 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             R.layout.support_simple_spinner_dropdown_item
         )
         autoCompleteView_sortBy.setAdapter(sortByArrayAdapter)
+    }
+     inner class  ActionModeCallback: ActionMode.Callback {
+        override fun onActionItemClicked(mode: ActionMode?, menuItem: MenuItem?): Boolean {
+            when(menuItem!!.itemId){
+                R.id.ate_menu_actionSelecting ->{
+                    homeViewModel.getSelectedProducts().forEach{
+                        deleteProduct(it)
+                    }
+                    mode!!.finish()
+                }
+                R.id.trashed_menu_actionSelecting ->{
+                    homeViewModel.getSelectedProducts().forEach{
+                        deleteProduct(it)
+                    }
+                    mode!!.finish()
+
+                }
+            }
+           return false
+        }
+
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            mode!!.menuInflater.inflate(R.menu.menu_action_selecting , menu)
+            mode.title = "Selected Products"
+            return true
+        }
+
+        override fun onPrepareActionMode(p0: ActionMode?, p1: Menu?): Boolean {
+        return false
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            actionMode = null
+            homeViewModel.setSelectingMode(false)
+            homeViewModel.setSelectedProducts(ArrayList())
+            listOfProductsAdapter!!.setProducts(allProducts)
+
+
+        }
+    }
+    private fun deleteProduct(product: Product){
+        homeViewModel.delete(product)
+        cancelNotification(requireContext(),product.id)
     }
 
 }

@@ -34,7 +34,7 @@
             style="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
             android:textStyle="bold"
 
-            android:hint="Product name"
+            android:text="Product name"
 
             />
 
