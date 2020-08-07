@@ -81,6 +81,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 val sortOptionsList = resources.getStringArray(R.array.sortBy)
                 val current = sortOptionsList[pos]
                 sortProducts(current)
+
             }
         val categoryArrayAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
             requireContext(),
@@ -104,6 +105,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             actionMode = if(it==false){
                 null
             }else {
+
                 requireActivity().startActionMode(actionModeCallback)
             }
         })
@@ -130,7 +132,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 currentProducts = products
                 listOfProductsAdapter!!.setProducts(products)
                 val isScrollable =isScrollable(nestedScrollView_home)
-                if(!isScrollable){
+                if(!isScrollable && actionMode==null){
                     fab.show()
                 }
             }
@@ -172,12 +174,14 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
+
                 when(direction){
                     ItemTouchHelper.LEFT ->{
                         deleteProduct(currentProducts[position])
+
                     }
                     RIGHT ->{
-                        deleteProduct(currentProducts[position])
+                       deleteProduct(currentProducts[position])
                     }
 
                 }
@@ -316,7 +320,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 if(product.productExpirationDate!=""){
                  generateNotification(product.id,product.productExpirationDate,product.productName,product.productType,requireContext())
                 }
-                homeViewModel.insert(product)
+                homeViewModel.insertProduct(product)
                 mAlertDialog.dismiss()
             }
 
@@ -340,6 +344,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
     override fun onQueryTextChange(p0: String?): Boolean {
     if(p0 == null || p0.trim().isEmpty()){
+        currentProducts = allProducts
         listOfProductsAdapter!!.setProducts(currentProducts)
         return false
     }
@@ -352,6 +357,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             }
         }
         listOfProductsAdapter!!.setProducts(filteredNewsList)
+        currentProducts = filteredNewsList
         return true
     }
     override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
@@ -477,6 +483,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         }
         preferences!!.setSorting(sortingOption)
         allProducts = tempList
+        currentProducts= tempList
         listOfProductsAdapter!!.setProducts(tempList)
     }
 
@@ -521,6 +528,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         }
 
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            fab.hide()
             mode!!.menuInflater.inflate(R.menu.menu_action_selecting , menu)
             mode.title = "Selected Products"
             return true
@@ -531,6 +539,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
+            fab.show()
             actionMode = null
             homeViewModel.setSelectingMode(false)
             homeViewModel.setSelectedProducts(ArrayList())
@@ -540,7 +549,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         }
     }
     private fun deleteProduct(product: Product){
-        homeViewModel.delete(product)
+        homeViewModel.deleteProduct(product)
         cancelNotification(requireContext(),product.id)
     }
 

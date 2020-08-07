@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.product_layout.view.*
 
 class ListOfProductsAdapter internal constructor(val context: Context?, private val homeViewModel: HomeViewModel): RecyclerView.Adapter<ListOfProductsAdapter.ViewHolder>() {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private var products = emptyList<Product>()
+    private var products =ArrayList<Product>()
     private var navController: NavController?=null
 
     val currentProduct = MutableLiveData<Product>()
@@ -54,7 +54,7 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
         val animation = AnimationUtils.loadAnimation(context,R.anim.fade_scale)
         val startOffsetMultiplier = 15
         animation.startOffset = (position*startOffsetMultiplier).toLong()
-        holder.itemView.animation = animation
+        //holder.itemView.animation = animation
         val selectedProducts = homeViewModel.getSelectedProducts()
         if(selectedProducts.contains(current)){
             Log.d("Contains",current.productName)
@@ -123,9 +123,18 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
 
 
 
-    internal fun setProducts(products: List<Product>){
-        this.products = products
+     fun setProducts(_products: List<Product>){
+        products.removeAll(products)
+         products.addAll( _products)
         notifyDataSetChanged()
+    }
+    fun addProduct(product: Product, position: Int){
+        products.add(product)
+        notifyItemInserted(position)
+    }
+    fun deleteProduct(product: Product,position: Int){
+        products.remove(product)
+        notifyItemRemoved(position)
     }
     private fun setCurrentProduct(product : Product){
         currentProduct.value = product

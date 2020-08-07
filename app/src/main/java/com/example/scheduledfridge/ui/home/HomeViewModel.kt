@@ -21,13 +21,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         isSelectingMode.value = false
     }
 
-    fun insert(product: Product) {
+    fun insertProduct(product: Product) {
         viewModelScope.launch {
             repository.insert(product)
         }
     }
 
-    fun delete(product: Product) {
+    fun deleteProduct(product: Product) {
         viewModelScope.launch {
             repository.delete(product)
         }
