@@ -148,10 +148,10 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 if (scrollY > oldScrollY) {
                     fab.hide()
                 }
-                if (scrollY < oldScrollY) {
+                if (scrollY < oldScrollY && actionMode==null) {
                     fab.show()
                 }
-                if (scrollY == 0) {
+                if (scrollY == 0 && actionMode==null) {
                    fab.show()
                 }
 
@@ -318,7 +318,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                     mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
                 )
                 if(product.productExpirationDate!=""){
-                 generateNotification(product.id,product.productExpirationDate,product.productName,product.productType,requireContext())
+                // generateNotification(product.id,product.productExpirationDate,product.productName,product.productType,requireContext())
                 }
                 homeViewModel.insertProduct(product)
                 mAlertDialog.dismiss()
