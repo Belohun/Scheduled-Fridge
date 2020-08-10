@@ -475,7 +475,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
             fab.hide()
             mode!!.menuInflater.inflate(R.menu.menu_action_selecting , menu)
-            mode.title = "Selected Products"
+            mode.title = requireContext().getString(R.string.selectProducts)
             return true
         }
 
@@ -488,7 +488,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             actionMode = null
             homeViewModel.setSelectingMode(false)
             homeViewModel.setSelectedProducts(ArrayList())
-            listOfProductsAdapter!!.setProducts(allProducts)
+            listOfProductsAdapter!!.setProducts(currentProducts)
 
 
         }

@@ -52,7 +52,6 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
 
         val current = products[position]
         var isSelected: Boolean
-        val isSelectedMode = false
         val animation = AnimationUtils.loadAnimation(context,R.anim.fade_scale)
         val startOffsetMultiplier = 15
         animation.startOffset = (position*startOffsetMultiplier).toLong()
@@ -70,14 +69,14 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
         holder.quantity.text = current.quantity.toString()
         ViewUtils().setImage(holder.icon,current, context)
         ViewUtils().setDaysBetween(holder.daysLeft,context,current)
-        isSelected = itemViewOnClickListener(holder, isSelectedMode, isSelected, context, current)
+        isSelected = itemViewOnClickListener(holder,  isSelected, context, current)
 
 
         holder.itemView.setOnLongClickListener {
         val popUpMenu = PopupMenu(context,it)
         popUpMenu.inflate(R.menu.menu_floating_context)
-        popUpMenu.setOnMenuItemClickListener {
-            when(it.itemId){
+        popUpMenu.setOnMenuItemClickListener {menuItem ->
+            when(menuItem.itemId){
                 R.id.context_menu_edit -> {
                     editProduct(context, current)
                 }
@@ -104,9 +103,8 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
         context: Context,
         current: Product
     ) {
-        val isSelected1 = isSelected
         val selectedProducts = homeViewModel.getSelectedProducts()
-        if (isSelected1) {
+        if (isSelected) {
             holder.itemView.background = context.getDrawable(R.drawable.product_background)
             selectedProducts.remove(current)
         } else {
@@ -184,16 +182,15 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
 
     private fun itemViewOnClickListener(
         holder: ViewHolder,
-        isSelectedMode: Boolean,
         isSelected: Boolean,
         context: Context,
         current: Product
     ): Boolean {
-        var isSelectedMode1 = isSelectedMode
+
         var isSelected1 = isSelected
         holder.itemView.setOnClickListener {
-            isSelectedMode1 = homeViewModel.getSelectingMode()
-            if (isSelectedMode1) {
+            val isSelectedMode = homeViewModel.getSelectingMode()
+            if (isSelectedMode) {
                 val selectedProducts = homeViewModel.getSelectedProducts()
                 if (isSelected1) {
                     isSelected1 = false
