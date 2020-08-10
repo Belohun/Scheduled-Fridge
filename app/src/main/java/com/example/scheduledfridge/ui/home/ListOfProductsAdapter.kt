@@ -52,7 +52,7 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
 
         val current = products[position]
         var isSelected: Boolean
-        var isSelectedMode:Boolean = false
+        val isSelectedMode = false
         val animation = AnimationUtils.loadAnimation(context,R.anim.fade_scale)
         val startOffsetMultiplier = 15
         animation.startOffset = (position*startOffsetMultiplier).toLong()
@@ -104,7 +104,7 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
         context: Context,
         current: Product
     ) {
-        var isSelected1 = isSelected
+        val isSelected1 = isSelected
         val selectedProducts = homeViewModel.getSelectedProducts()
         if (isSelected1) {
             holder.itemView.background = context.getDrawable(R.drawable.product_background)
@@ -233,14 +233,6 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
         products.removeAll(products)
          products.addAll( _products)
         notifyDataSetChanged()
-    }
-    fun addProduct(product: Product, position: Int){
-        products.add(product)
-        notifyItemInserted(position)
-    }
-    fun deleteProduct(product: Product,position: Int){
-        products.remove(product)
-        notifyItemRemoved(position)
     }
     private fun setCurrentProduct(product : Product){
         currentProduct.value = product

@@ -1,5 +1,4 @@
 package com.example.scheduledfridge.utils
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Bitmap
@@ -13,11 +12,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
-import com.example.scheduledfridge.ui.home.HomeViewModel
 import kotlinx.android.synthetic.main.add_product_layout.*
 import kotlinx.android.synthetic.main.add_product_layout.view.*
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
