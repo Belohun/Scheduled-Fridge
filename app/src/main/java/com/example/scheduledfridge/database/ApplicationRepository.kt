@@ -9,6 +9,9 @@ class ApplicationRepository(private val dao:ProductDao) {
     fun delete(product: Product){
         dao.delete(product)
     }
+    fun update(product: Product){
+        dao.update(product)
+    }
 
 
 

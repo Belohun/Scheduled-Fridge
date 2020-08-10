@@ -25,7 +25,7 @@
             >
             <com.google.android.material.textfield.TextInputEditText
                 android:textColor="@color/colorText"
-                android:id="@+id/add_product_name_text"
+                android:id="@+id/productName_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"

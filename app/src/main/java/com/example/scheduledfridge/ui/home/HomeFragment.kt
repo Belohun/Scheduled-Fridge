@@ -1,6 +1,5 @@
 package com.example.scheduledfridge.ui.home
 import android.annotation.SuppressLint
-import android.app.DatePickerDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.graphics.Canvas
@@ -23,6 +22,7 @@ import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
 import com.example.scheduledfridge.ui.productDetails.ProductDetailsViewModel
 import com.example.scheduledfridge.utils.Preferences
+import com.example.scheduledfridge.utils.ViewUtils
 import com.example.scheduledfridge.utils.cancelNotification
 import com.example.scheduledfridge.utils.generateNotification
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -83,7 +83,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 sortProducts(current)
 
             }
-        val categoryArrayAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
+        val typesArrayAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.types,
             R.layout.support_simple_spinner_dropdown_item
@@ -105,7 +105,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             actionMode = if(it==false){
                 null
             }else {
-
                 requireActivity().startActionMode(actionModeCallback)
             }
         })
@@ -198,7 +197,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         }
         val itemTouchHelper = ItemTouchHelper(simpleCallBackHelper)
         itemTouchHelper.attachToRecyclerView(recyclerView_home)
-        fabOnClick(fab,categoryArrayAdapter)
+        fabOnClick(fab,typesArrayAdapter)
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -217,7 +216,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
 
             mAlertDialog.type_AutoCompleteTextView.setAdapter(adapter)
-            calendarOnClick(dialogView, mAlertDialog)
+            ViewUtils().calendarOnClick(dialogView, mAlertDialog,requireContext())
 
             buttonAddOnClick(dialogView, mAlertDialog)
             mAlertDialog.type_AutoCompleteTextView.setOnClickListener{
@@ -230,101 +229,54 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         }
     }
 
-    private fun calendarOnClick(
+
+
+
+    private fun buttonAddOnClick(
         dialogView: View,
         mAlertDialog: AlertDialog
     ) {
-        dialogView.calendar_ImageButton.setOnClickListener {
-            val c = Calendar.getInstance()
-            val year = c.get(Calendar.YEAR)
-            val month = c.get(Calendar.MONTH)
-            val day = c.get(Calendar.DAY_OF_MONTH)
-            val dpd = DatePickerDialog(
-                this.requireActivity(),
-                DatePickerDialog.OnDateSetListener { _, _year, _monthOfYear, _dayOfMonth ->
-                    val date = "" + _dayOfMonth + "/" + (_monthOfYear + 1) + "/" + _year
-                    mAlertDialog.date_TextInputEditText.setText(date)
-                },
-                year,
-                month,
-                day
-            )
-            dpd.show()
-        }
+        addProductAfterClick(dialogView, mAlertDialog)
     }
-
     @SuppressLint("NewApi")
-    private fun buttonAddOnClick(
+    fun addProductAfterClick(
         dialogView: View,
         mAlertDialog: AlertDialog
     ) {
         dialogView.btn_add.setOnClickListener {
 
             val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern(requireContext().getString(R.string.datePattern))
+            val formatter =
+                DateTimeFormatter.ofPattern(requireContext().getString(R.string.datePattern))
             val formatted = current.format(formatter)
             var noErrors = true
-            when {
-
-                dialogView.add_product_name_text.text!!.length > 26 -> {
-                    noErrors=false
-                    dialogView.add_product_name_text.error= requireContext().getString(R.string.max26Char)
-                }
-                dialogView.add_product_name_text.text!!.isEmpty() -> {
-                    noErrors=false
-                    dialogView.add_product_name_text.error=requireContext().getString(R.string.fieldMustNotBeEmpty)
-                }
-                else -> {
-                    dialogView.add_product_name_text.error = null
-                }
-            }
-            when {
-                dialogView.quantity_TextInputEditText.text!!.isEmpty() -> {
-                    noErrors=false
-                    dialogView.quantity_TextInputEditText.error=requireContext().getString(R.string.fieldMustNotBeEmpty)
-
-                }
-                dialogView.quantity_TextInputEditText.text!!.length > 5 -> {
-                    noErrors=false
-                    dialogView.quantity_TextInputEditText.error=requireContext().getString(R.string.quantityMax5Char)
-                }
-                else -> {
-                    dialogView.quantity_TextInputEditText.error = null
-                }
-            }
-            if( dialogView.type_AutoCompleteTextView!!.text.isEmpty()){
-                noErrors=false
-                dialogView.type_AutoCompleteTextView.error =requireContext().getString(R.string.selectOneOfTypes)
-            }
-            else {
-                dialogView.type_AutoCompleteTextView.error = null
-            }
+            noErrors = ViewUtils().isNoErrors(dialogView, noErrors,requireContext())
 
             val id: Int = if (allProducts.isEmpty()) {
                 1
             } else {
-                allProducts.maxBy{ it.id }!!.id + 1
+                allProducts.maxBy { it.id }!!.id + 1
             }
 
 
-            if(noErrors){
+            if (noErrors) {
                 val product = Product(
                     id,
-                    mAlertDialog.add_product_name_text.text.toString(),
+                    mAlertDialog.productName_editText.text.toString(),
                     mAlertDialog.type_AutoCompleteTextView.text.toString(),
                     mAlertDialog.date_TextInputEditText.text.toString(),
                     formatted.toString()
                     ,
                     mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
                 )
-                if(product.productExpirationDate!=""){
-                // generateNotification(product.id,product.productExpirationDate,product.productName,product.productType,requireContext())
+                if (product.productExpirationDate != "") {
+                     generateNotification(product.id,product.productExpirationDate,product.productName,product.productType,requireContext())
                 }
                 homeViewModel.insertProduct(product)
                 mAlertDialog.dismiss()
             }
 
-            }
+        }
     }
 
 

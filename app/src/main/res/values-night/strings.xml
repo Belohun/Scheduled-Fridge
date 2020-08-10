@@ -48,6 +48,8 @@
     <string name="appPreferences">AppPreferences</string>
     <string name="sortingSelected">SortingSelected</string>
     <string name="delete">delete</string>
+    <string name="select">Select</string>
+    <string name="Edit">Edit</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>
