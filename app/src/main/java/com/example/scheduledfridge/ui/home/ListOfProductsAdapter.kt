@@ -51,25 +51,14 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val current = products[position]
-        var isSelected: Boolean
+        var isSelected : Boolean
         val animation = AnimationUtils.loadAnimation(context,R.anim.fade_scale)
         val startOffsetMultiplier = 15
         animation.startOffset = (position*startOffsetMultiplier).toLong()
         //holder.itemView.animation = animation
         val selectedProducts = homeViewModel.getSelectedProducts()
-        if(selectedProducts.contains(current)){
-            Log.d("Contains",current.productName)
-            holder.itemView.background = context!!.getDrawable(R.drawable.product_background_selected)
-            isSelected= true
-        }else{
-            holder.itemView.background = context!!.getDrawable(R.drawable.product_background)
-            isSelected= false
-        }
-        holder.productName.text = current.productName
-        holder.quantity.text = current.quantity.toString()
-        ViewUtils().setImage(holder.icon,current, context)
-        ViewUtils().setDaysBetween(holder.daysLeft,context,current)
-        isSelected = itemViewOnClickListener(holder,  isSelected, context, current)
+        isSelected = setUpProductView(selectedProducts, current, holder,  context)
+
 
 
         holder.itemView.setOnLongClickListener {
@@ -81,7 +70,8 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
                     editProduct(context, current)
                 }
                 R.id.context_menu_select ->{
-                    selectProduct(isSelected, holder, context, current)
+                  isSelected =  selectProduct(isSelected, holder, context!!, current)
+
                 }
 
 
@@ -92,9 +82,79 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
         currentPosition = position
         true
     }
+        holder.itemView.setOnClickListener {
+           isSelected = itemViewOnClick(isSelected, it, context!!, current, holder)
+
+        }
 
 
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setUpProductView(
+        selectedProducts: ArrayList<Product>,
+        current: Product,
+        holder: ViewHolder,
+
+        context: Context?
+    ): Boolean {
+        val isSelected1: Boolean
+        if (selectedProducts.contains(current)) {
+            Log.d("Contains", current.productName)
+            holder.itemView.background =
+                context!!.getDrawable(R.drawable.product_background_selected)
+            isSelected1 = true
+        } else {
+            holder.itemView.background = context!!.getDrawable(R.drawable.product_background)
+            isSelected1 = false
+        }
+        holder.productName.text = current.productName
+        holder.quantity.text = current.quantity.toString()
+        ViewUtils().setImage(holder.icon, current, context)
+        ViewUtils().setDaysBetween(holder.daysLeft, context, current)
+        return isSelected1
+    }
+
+    private fun itemViewOnClick(
+        isSelected: Boolean,
+        it: View,
+        context: Context,
+        current: Product,
+        holder: ViewHolder
+    ): Boolean {
+        var isSelected1 = isSelected
+        val isSelectedMode = homeViewModel.getSelectingMode()
+        if (isSelectedMode) {
+            val selectedProducts = homeViewModel.getSelectedProducts()
+            if (isSelected1) {
+                isSelected1 = false
+                it.background = context.getDrawable(R.drawable.product_background)
+                selectedProducts.remove(current)
+
+            } else {
+                isSelected1 = true
+                it.background = context.getDrawable(R.drawable.product_background_selected)
+                selectedProducts.add(current)
+            }
+            homeViewModel.setSelectedProducts(selectedProducts)
+        } else {
+            holder.icon.transitionName = current.id.toString()
+            holder.daysLeft.transitionName =
+                current.id.toString() + context.getString(R.string.daysLeft)
+            val extras = FragmentNavigatorExtras(
+
+                holder.icon to current.id.toString(),
+                holder.daysLeft to current.id.toString() + context.getString(R.string.daysLeft)
+            )
+            navController!!.navigate(
+                R.id.action_nav_home_to_nav_productDetails,
+                null,
+                null,
+                extras
+            )
+            setCurrentProduct(current)
+        }
+        return isSelected1
     }
 
     private fun selectProduct(
@@ -102,21 +162,24 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
         holder: ViewHolder,
         context: Context,
         current: Product
-    ) {
+    ): Boolean {
+        val isSelectedLocal: Boolean
         val selectedProducts = homeViewModel.getSelectedProducts()
         if (isSelected) {
             holder.itemView.background = context.getDrawable(R.drawable.product_background)
             selectedProducts.remove(current)
+            isSelectedLocal = false
         } else {
 
             holder.itemView.background = context.getDrawable(R.drawable.product_background_selected)
             if (!homeViewModel.getSelectingMode()) {
                 homeViewModel.setSelectingMode(true)
             }
-
+            isSelectedLocal = true
             selectedProducts.add(current)
         }
         homeViewModel.setSelectedProducts(selectedProducts)
+    return isSelectedLocal
     }
 
     private fun editProduct(
@@ -178,51 +241,6 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
                 mAlertDialog.dismiss()
             }
         }
-    }
-
-    private fun itemViewOnClickListener(
-        holder: ViewHolder,
-        isSelected: Boolean,
-        context: Context,
-        current: Product
-    ): Boolean {
-
-        var isSelected1 = isSelected
-        holder.itemView.setOnClickListener {
-            val isSelectedMode = homeViewModel.getSelectingMode()
-            if (isSelectedMode) {
-                val selectedProducts = homeViewModel.getSelectedProducts()
-                if (isSelected1) {
-                    isSelected1 = false
-                    it.background = context.getDrawable(R.drawable.product_background)
-                    selectedProducts.remove(current)
-
-                } else {
-                    isSelected1 = true
-                    it.background = context.getDrawable(R.drawable.product_background_selected)
-                    selectedProducts.add(current)
-                }
-                homeViewModel.setSelectedProducts(selectedProducts)
-            } else {
-                holder.icon.transitionName = current.id.toString()
-                holder.daysLeft.transitionName =
-                    current.id.toString() + context.getString(R.string.daysLeft)
-                val extras = FragmentNavigatorExtras(
-
-                    holder.icon to current.id.toString(),
-                    holder.daysLeft to current.id.toString() + context.getString(R.string.daysLeft)
-                )
-                navController!!.navigate(
-                    R.id.action_nav_home_to_nav_productDetails,
-                    null,
-                    null,
-                    extras
-                )
-                setCurrentProduct(current)
-            }
-
-        }
-        return isSelected1
     }
 
 

@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#546e7a</color>
     <color name="colorAccent">#2196f3</color>
     <color name="colorBackground">#ffffff</color>
+    <color name="colorBackgroundTransparent">#CCffffff</color>
     <color name="colorText">#000000</color>
     <color name="colorSelected">#900a6ebd</color>
     <color name="colorFresh">#00b93a</color>
