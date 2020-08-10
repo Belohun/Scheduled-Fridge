@@ -155,77 +155,7 @@ fun returnIconDrawable(type: String,context: Context): Bitmap? {
         val today = LocalDate.now()
         return ChronoUnit.DAYS.between(today, toDate)
     }
-    @SuppressLint("NewApi")
-    fun addProductAfterClick(
-        dialogView: View,
-        mAlertDialog: AlertDialog, context: Context, id: Int, homeViewModel: HomeViewModel
-    ) {
-        dialogView.btn_add.setOnClickListener {
 
-            val current = LocalDateTime.now()
-            val formatter =
-                DateTimeFormatter.ofPattern(context.getString(R.string.datePattern))
-            val formatted = current.format(formatter)
-            var noErrors = true
-            when {
-
-                dialogView.productName_editText.text!!.length > 26 -> {
-                    noErrors = false
-                    dialogView.productName_editText.error =
-                        context.getString(R.string.max26Char)
-                }
-                dialogView.productName_editText.text!!.isEmpty() -> {
-                    noErrors = false
-                    dialogView.productName_editText.error =
-                        context.getString(R.string.fieldMustNotBeEmpty)
-                }
-                else -> {
-                    dialogView.productName_editText.error = null
-                }
-            }
-            when {
-                dialogView.quantity_TextInputEditText.text!!.isEmpty() -> {
-                    noErrors = false
-                    dialogView.quantity_TextInputEditText.error =
-                        context.getString(R.string.fieldMustNotBeEmpty)
-
-                }
-                dialogView.quantity_TextInputEditText.text!!.length > 5 -> {
-                    noErrors = false
-                    dialogView.quantity_TextInputEditText.error =
-                        context.getString(R.string.quantityMax5Char)
-                }
-                else -> {
-                    dialogView.quantity_TextInputEditText.error = null
-                }
-            }
-            if (dialogView.type_AutoCompleteTextView!!.text.isEmpty()) {
-                noErrors = false
-                dialogView.type_AutoCompleteTextView.error =
-                    context.getString(R.string.selectOneOfTypes)
-            } else {
-                dialogView.type_AutoCompleteTextView.error = null
-            }
-            
-            if (noErrors) {
-                val product = Product(
-                    id,
-                    mAlertDialog.productName_editText.text.toString(),
-                    mAlertDialog.type_AutoCompleteTextView.text.toString(),
-                    mAlertDialog.date_TextInputEditText.text.toString(),
-                    formatted.toString()
-                    ,
-                    mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
-                )
-                if (product.productExpirationDate != "") {
-                    // generateNotification(product.id,product.productExpirationDate,product.productName,product.productType,requireContext())
-                }
-                homeViewModel.insertProduct(product)
-                mAlertDialog.dismiss()
-            }
-
-        }
-    }
 
     fun calendarOnClick(
         dialogView: View,

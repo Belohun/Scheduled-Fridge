@@ -231,15 +231,8 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
 
 
-
-    private fun buttonAddOnClick(
-        dialogView: View,
-        mAlertDialog: AlertDialog
-    ) {
-        addProductAfterClick(dialogView, mAlertDialog)
-    }
     @SuppressLint("NewApi")
-    fun addProductAfterClick(
+    private fun buttonAddOnClick(
         dialogView: View,
         mAlertDialog: AlertDialog
     ) {
@@ -251,7 +244,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             val formatted = current.format(formatter)
             var noErrors = true
             noErrors = ViewUtils().isNoErrors(dialogView, noErrors,requireContext())
-
             val id: Int = if (allProducts.isEmpty()) {
                 1
             } else {
@@ -270,7 +262,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                     mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
                 )
                 if (product.productExpirationDate != "") {
-                     generateNotification(product.id,product.productExpirationDate,product.productName,product.productType,requireContext())
+                    generateNotification(product.id,product.productExpirationDate,product.productName,product.productType,requireContext())
                 }
                 homeViewModel.insertProduct(product)
                 mAlertDialog.dismiss()
@@ -278,6 +270,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
         }
     }
+
 
 
 
