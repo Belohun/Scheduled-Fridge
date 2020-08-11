@@ -42,7 +42,7 @@
     <string name="quantityMax5Char">Quantity should be max length of 5 numbers!</string>
     <string name="selectOneOfTypes">Select one of types!</string>
     <string name="scheduleWhenToNotify">Schedule when to notify</string>
-    <string name="howManyDaysBefore">How many days before expiration</string>
+    <string name="howManyDaysBefore">How many days before expiration:</string>
     <string name="atWhatTime">At what time</string>
     <string name="sortBy">Sort by:</string>
     <string name="appPreferences">AppPreferences</string>
@@ -51,6 +51,7 @@
     <string name="select">Select</string>
     <string name="Edit">Edit</string>
     <string name="selectProducts">Select products</string>
+    <string name="sameWhenAdded">Same time when added</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>
