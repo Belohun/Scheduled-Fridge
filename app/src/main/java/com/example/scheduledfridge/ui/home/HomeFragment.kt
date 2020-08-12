@@ -44,7 +44,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     private val productDetailsViewModel: ProductDetailsViewModel by activityViewModels()
     private var listOfProductsAdapter: ListOfProductsAdapter? = null
     private var categoriesAdapter: CategoriesAdapter? = null
-    var currentProducts : List<Product> = emptyList()
+    private var  currentProducts : List<Product> = emptyList()
     private var allProducts : List<Product> = emptyList()
     private lateinit var  notificationManager: NotificationManager
     private var  sortByArrayAdapter: ArrayAdapter<CharSequence>? = null
@@ -289,7 +289,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
     override fun onQueryTextChange(p0: String?): Boolean {
     if(p0 == null || p0.trim().isEmpty()){
-        currentProducts = allProducts
         listOfProductsAdapter!!.setProducts(currentProducts)
         return false
     }
@@ -302,7 +301,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             }
         }
         listOfProductsAdapter!!.setProducts(filteredNewsList)
-        currentProducts = filteredNewsList
         return true
     }
     override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {

@@ -95,4 +95,6 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 // RectckerVuewSwoueDecirator
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
