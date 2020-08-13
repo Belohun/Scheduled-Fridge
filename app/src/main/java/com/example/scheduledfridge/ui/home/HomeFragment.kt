@@ -243,7 +243,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
                 DateTimeFormatter.ofPattern(requireContext().getString(R.string.datePattern))
             val formatted = current.format(formatter)
             var noErrors = true
-            noErrors = ViewUtils().isNoErrors(dialogView, noErrors,requireContext())
+            noErrors = ViewUtils().isNoErrorsAddProduct(dialogView, noErrors,requireContext())
             val id: Int = if (allProducts.isEmpty()) {
                 1
             } else {

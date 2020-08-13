@@ -177,7 +177,7 @@ fun returnIconDrawable(type: String,context: Context): Bitmap? {
             dpd.show()
         }
     }
-     fun isNoErrors(dialogView: View, noErrors: Boolean, context: Context): Boolean {
+     fun isNoErrorsAddProduct(dialogView: View, noErrors: Boolean, context: Context): Boolean {
         var noErrors1 = noErrors
         when {
             dialogView.productName_editText.text!!.length > 26 -> {

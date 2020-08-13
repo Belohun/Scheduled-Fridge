@@ -1,6 +1,7 @@
 package com.example.scheduledfridge.utils
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.scheduledfridge.R
 import com.google.gson.Gson
 
@@ -35,18 +36,28 @@ class Preferences(context: Context) {
     fun getSorting(): String {
         return appSettingPrefs.getString(sortingSelected,"Last added last")!!
     }
-    fun addDayBeforeExpired(value:Int){
-        val days = getDaysBeforeExpired()
+    fun addDayBeforeExpiration(value:String){
+        val days = getDaysBeforeExpiration()
         days.add(value)
+        days.sort()
         val jsonString = Gson().toJson(days)
         sharedPrefsEdit.putString(daysBeforeExpired,jsonString)
+        sharedPrefsEdit.apply()
     }
-    fun getDaysBeforeExpired(): ArrayList<Int> {
-        val standardValue = ArrayList<Int>()
-        standardValue.add(1)
-        standardValue.add(3)
+    fun getDaysBeforeExpiration(): ArrayList<String> {
+        val standardValue = ArrayList<String>()
+        standardValue.add("1")
+        standardValue.add("3")
         val standardValueJson = Gson().toJson(standardValue)
         val jsonString = appSettingPrefs.getString(daysBeforeExpired,standardValueJson)
-        return Gson().fromJson<ArrayList<Int>>(jsonString, ArrayList::class.java)
+        return Gson().fromJson<ArrayList<String>>(jsonString, ArrayList::class.java)
+    }
+    fun deleteDaysBeforeExpiration(value: String){
+        val days = getDaysBeforeExpiration()
+        days.remove(value)
+        val jsonString = Gson().toJson(days)
+        sharedPrefsEdit.putString(daysBeforeExpired,jsonString)
+        sharedPrefsEdit.apply()
+
     }
 }

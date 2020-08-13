@@ -3,6 +3,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationManagerCompat
@@ -14,6 +15,7 @@ import com.example.scheduledfridge.R
 import com.example.scheduledfridge.utils.Preferences
 import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.settings_add_day_layout.*
+import kotlinx.android.synthetic.main.settings_day_layout.*
 
 class SettingsFragment : Fragment() {
 
@@ -30,7 +32,7 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val preferences = Preferences(requireContext())
         val isDark = preferences.getMode()
-        val daysBeforeExpired = preferences.getDaysBeforeExpired()
+        val daysBeforeExpired = preferences.getDaysBeforeExpiration()
         val daysBeforeExpiredAdapter = SettingsDaysBeforeExpiredAdapter(context)
         daysBeforeExpiredAdapter.setDays(daysBeforeExpired)
         settings_daysBefore_RecyclerView.adapter = daysBeforeExpiredAdapter
@@ -65,18 +67,49 @@ class SettingsFragment : Fragment() {
 
             }
         }
+
         settings_addDaysBefore_ImageButton.setOnClickListener{
             val dialogView =
                 LayoutInflater.from(this.activity).inflate(R.layout.settings_add_day_layout, null)
             val mBuilder = AlertDialog.Builder(this.requireActivity())
                 .setView(dialogView)
             val mAlertDialog = mBuilder.show()
+            val daysBeforeArrayAdapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.daysBefore,
+                R.layout.support_simple_spinner_dropdown_item
+            )
+            mAlertDialog.settings_add_day_AutoCompleteTextView.setAdapter(daysBeforeArrayAdapter)
+            mAlertDialog.settings_add_day_AutoCompleteTextView.setOnClickListener{
+                mAlertDialog.settings_add_day_AutoCompleteTextView.error = null
+            }
             mAlertDialog.settings_add_day_btn_cancel.setOnClickListener{
                 mAlertDialog.dismiss()
             }
             mAlertDialog.settings_add_day_btn_add.setOnClickListener{
+                var noErrors = true
+                when {
+                    mAlertDialog.settings_add_day_AutoCompleteTextView.text.isEmpty() -> {
+                        noErrors = false
+                        mAlertDialog.settings_add_day_AutoCompleteTextView.error = requireContext().getString(R.string.fieldMustNotBeEmpty)
+                    }
+                    preferences.getDaysBeforeExpiration().contains(mAlertDialog.settings_add_day_AutoCompleteTextView.text.toString()) -> {
+                        noErrors = false
+                        mAlertDialog.settings_add_day_AutoCompleteTextView.error = requireContext().getString(R.string.thereIsAlreadySameDay)
+                    }
+                    else -> {
+                        noErrors=true
+                        mAlertDialog.settings_add_day_AutoCompleteTextView.error = null
 
+                    }
+                }
+                if (noErrors){
+                    preferences.addDayBeforeExpiration(mAlertDialog.settings_add_day_AutoCompleteTextView.text.toString())
+                    daysBeforeExpiredAdapter.setDays(preferences.getDaysBeforeExpiration())
+                    mAlertDialog.dismiss()
+                }
             }
+
 
         }
         super.onViewCreated(view, savedInstanceState)

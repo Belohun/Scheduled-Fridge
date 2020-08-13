@@ -209,7 +209,7 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
 
         mAlertDialog.btn_add.setOnClickListener {
             var noErrors = true
-            noErrors = ViewUtils().isNoErrors(dialogView, noErrors, context)
+            noErrors = ViewUtils().isNoErrorsAddProduct(dialogView, noErrors, context)
             if (noErrors) {
                 val product = Product(
                     current.id,
