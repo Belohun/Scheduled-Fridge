@@ -1,7 +1,6 @@
 package com.example.scheduledfridge.utils
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import com.example.scheduledfridge.R
 import com.google.gson.Gson
 

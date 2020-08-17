@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -87,7 +86,7 @@ class SettingsFragment : Fragment() {
                 mAlertDialog.dismiss()
             }
             mAlertDialog.settings_add_day_btn_add.setOnClickListener{
-                var noErrors = true
+                var noErrors: Boolean
                 when {
                     mAlertDialog.settings_add_day_AutoCompleteTextView.text.isEmpty() -> {
                         noErrors = false

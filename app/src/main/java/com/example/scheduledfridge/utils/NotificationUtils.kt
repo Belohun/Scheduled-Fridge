@@ -7,11 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.scheduledfridge.MainActivity
 import com.example.scheduledfridge.R
-
 
 
 fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context, ID: Int, title: String, image: Bitmap) {

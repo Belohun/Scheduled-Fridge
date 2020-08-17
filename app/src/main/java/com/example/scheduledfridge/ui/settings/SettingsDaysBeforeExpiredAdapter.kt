@@ -16,7 +16,7 @@ class SettingsDaysBeforeExpiredAdapter internal constructor(val context: Context
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val day = itemView.settings_day_TextView!!
-        val delete_button = itemView.settings_delete_day!!
+        val deleteButton = itemView.settings_delete_day!!
     }
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -34,7 +34,7 @@ class SettingsDaysBeforeExpiredAdapter internal constructor(val context: Context
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val current = days[position]
         holder.day.text = current
-        holder.delete_button.setOnClickListener {
+        holder.deleteButton.setOnClickListener {
             preferences.deleteDaysBeforeExpiration(current)
             setDays(preferences.getDaysBeforeExpiration())
         }
