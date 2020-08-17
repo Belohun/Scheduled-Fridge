@@ -62,25 +62,19 @@ fun generateNotification(
     productType: String,
     context: Context
 ) {
-    val listOfScheduledNotification = mutableListOf(0,1,2,3)
-    val listOfScheduledNotificationSorted =listOfScheduledNotification.sorted()
-    val listOfScheduledNotificationSortedReversed = listOfScheduledNotificationSorted.reversed()
+    val intent = Intent(context, ReminderBroadcast::class.java)
     val daysLeft = ViewUtils().getDaysLeft(productExpirationDate, context)
-    var i = 0
-    while (i <= listOfScheduledNotification.size ){
-        if(i == daysLeft.toInt()){
             val currentDate = System.currentTimeMillis()
             val millsInDay = 86400000
             val timeToBeAdded: Long = millsInDay * (daysLeft)
             val timeToBeAddedTemp = 1000 * 5
-            Log.d("daysLeft", daysLeft.toString())
             val message: String =
                 if(daysLeft <1){
                     context.getString(R.string.Expired)
                 }else {
                     (daysLeft ).toString() + " " + context.getString(R.string.daysLeftToExpire)
             }
-            val intent = Intent(context, ReminderBroadcast::class.java)
+
             intent.putExtra(context.getString(R.string.name),productName)
             intent.putExtra(context.getString(R.string.id),id)
             intent.putExtra(context.getString(R.string.message), message)
@@ -95,11 +89,6 @@ fun generateNotification(
                 )
         }
 
-
-   i++
-    }
-
-}
 fun cancelNotification(context: Context,id:Int){
     val intent = Intent(context, ReminderBroadcast::class.java)
     PendingIntent.getBroadcast(context,id,intent,PendingIntent.FLAG_UPDATE_CURRENT).cancel()

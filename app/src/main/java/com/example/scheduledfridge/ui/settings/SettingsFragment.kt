@@ -60,7 +60,7 @@ class SettingsFragment : Fragment() {
             subOptions_layout_settings.isVisible = isChecked
             if (isChecked){
                 preferences.setNotifications(true)
-                NotificationManagerCompat.from(requireContext()).cancelAll()
+              //  NotificationManagerCompat.from(requireContext()).cancelAll()
 
             }else{
                 preferences.setNotifications(false)

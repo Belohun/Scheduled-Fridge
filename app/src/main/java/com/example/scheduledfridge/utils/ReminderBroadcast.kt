@@ -24,12 +24,20 @@ class ReminderBroadcast: BroadcastReceiver() {
 
         val preferences =Preferences(context)
         val isNotificationEnabled = preferences.getNotificationSetting()
+        val listOfScheduledNotification = preferences.getDaysBeforeExpiration()
+        val daysLeft = ViewUtils().getDaysLeft(expirationDate,context)
         if(isNotificationEnabled) {
-            notificationManager.sendNotification(message!!, context, id, name!!, image!!)
+            var i = 0
+            while (i < listOfScheduledNotification.size ) {
+                if (listOfScheduledNotification[i].toInt() == daysLeft.toInt()) {
+                    notificationManager.sendNotification(message!!, context, id, name!!, image!!)
+                }
+                i++
+            }
         }
 
 
-        val daysLeft = ViewUtils().getDaysLeft(expirationDate,context)
+
         if(daysLeft > 0) {
             generateNotification(id, expirationDate, name!!, type, context)
         }
