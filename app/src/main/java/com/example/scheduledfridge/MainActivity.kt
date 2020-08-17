@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
         val preferences = Preferences(this)
-        val isDark = preferences.getMode()
+        val isDark = preferences.isNightMode()
         if(isDark) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }else{

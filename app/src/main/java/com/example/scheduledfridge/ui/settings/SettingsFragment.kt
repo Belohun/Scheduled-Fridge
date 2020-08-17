@@ -15,7 +15,6 @@ import com.example.scheduledfridge.R
 import com.example.scheduledfridge.utils.Preferences
 import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.settings_add_day_layout.*
-import kotlinx.android.synthetic.main.settings_day_layout.*
 
 class SettingsFragment : Fragment() {
 
@@ -31,7 +30,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val preferences = Preferences(requireContext())
-        val isDark = preferences.getMode()
+        val isDark = preferences.isNightMode()
         val daysBeforeExpired = preferences.getDaysBeforeExpiration()
         val daysBeforeExpiredAdapter = SettingsDaysBeforeExpiredAdapter(context)
         daysBeforeExpiredAdapter.setDays(daysBeforeExpired)
@@ -43,11 +42,11 @@ class SettingsFragment : Fragment() {
         switchMaterial_nightMode_settings.setOnCheckedChangeListener{_, isChecked ->
             if(isChecked){
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                preferences.setMode(true)
+                preferences.setNightMode(true)
 
             }else{
                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                preferences.setMode(false)
+                preferences.setNightMode(false)
             }
 
         }
@@ -58,6 +57,7 @@ class SettingsFragment : Fragment() {
 
 
         switchMaterial_notification_settings.setOnCheckedChangeListener{_,isChecked ->
+            subOptions_layout_settings.isVisible = isChecked
             if (isChecked){
                 preferences.setNotifications(true)
                 NotificationManagerCompat.from(requireContext()).cancelAll()

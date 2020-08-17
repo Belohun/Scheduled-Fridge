@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
 import com.example.scheduledfridge.utils.ViewUtils
+import com.example.scheduledfridge.utils.cancelNotification
 import com.example.scheduledfridge.utils.generateNotification
 import kotlinx.android.synthetic.main.add_product_layout.*
 import kotlinx.android.synthetic.main.product_layout.view.*
@@ -221,6 +222,7 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
                     mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
                 )
                 if (product.productExpirationDate != "") {
+                    cancelNotification(context,product.id)
                     generateNotification(
                         product.id,
                         product.productExpirationDate,

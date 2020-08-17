@@ -15,10 +15,10 @@ class Preferences(context: Context) {
     private val sharedPrefsEdit: SharedPreferences.Editor = appSettingPrefs.edit()
 
 
-    fun getMode():Boolean{
+    fun isNightMode():Boolean{
         return appSettingPrefs.getBoolean(nightMode,false)
     }
-    fun setMode(value:Boolean){
+    fun setNightMode(value:Boolean){
         sharedPrefsEdit.putBoolean(nightMode,value)
         sharedPrefsEdit.apply()
     }
