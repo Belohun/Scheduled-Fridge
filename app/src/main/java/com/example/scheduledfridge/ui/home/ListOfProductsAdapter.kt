@@ -217,7 +217,7 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
                     mAlertDialog.productName_editText.text.toString(),
                     mAlertDialog.type_AutoCompleteTextView.text.toString(),
                     mAlertDialog.date_TextInputEditText.text.toString(),
-                    current.productAdedDate
+                    current.productAddedDate
                     ,
                     mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
                 )

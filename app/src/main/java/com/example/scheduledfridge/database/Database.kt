@@ -4,9 +4,10 @@ import androidx.room.*
 import com.example.scheduledfridge.R
 
 
-@Database(entities = [Product::class],version = 1)
+@Database(entities = [Product::class,Statistic::class],version = 1)
 abstract class ProductDatabase: RoomDatabase(){
             abstract fun productDao(): ProductDao
+            abstract fun statisticsDao():StatisticsDao
     companion object{
         @Volatile
         private var INSTANCE: ProductDatabase?=null

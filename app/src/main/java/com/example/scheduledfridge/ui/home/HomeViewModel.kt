@@ -4,38 +4,43 @@ import androidx.lifecycle.*
 import com.example.scheduledfridge.database.ApplicationRepository
 import com.example.scheduledfridge.database.Product
 import com.example.scheduledfridge.database.ProductDatabase
+import com.example.scheduledfridge.database.Statistic
 import kotlinx.coroutines.launch
 
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ApplicationRepository
     var allProducts: LiveData<List<Product>>
+    private var allStatistic: LiveData<List<Statistic>>
     val isSelectingMode = MutableLiveData<Boolean>()
     private val selectedProducts = MutableLiveData<ArrayList<Product>>()
 
 
     init {
-        val dao = ProductDatabase.getDatabase(application).productDao()
-        repository = ApplicationRepository(dao)
+        val productDao = ProductDatabase.getDatabase(application).productDao()
+        val statisticsDao = ProductDatabase.getDatabase(application).statisticsDao()
+        repository = ApplicationRepository(productDao,statisticsDao)
         allProducts = repository.allProducts
+        allStatistic = repository.allStatistic
         isSelectingMode.value = false
     }
 
     fun insertProduct(product: Product) {
         viewModelScope.launch {
-            repository.insert(product)
+            repository.insertProduct(product)
         }
     }
     fun updateProduct(product: Product){
         viewModelScope.launch {
-            repository.update(product)
+            repository.updateProduct(product)
         }
     }
 
-    fun deleteProduct(product: Product) {
+    fun deleteProduct(product: Product,eaten:Boolean) {
         viewModelScope.launch {
-            repository.delete(product)
+            repository.deleteProduct(product,eaten)
         }
+
 
     }
     fun setSelectingMode (isSelected: Boolean){

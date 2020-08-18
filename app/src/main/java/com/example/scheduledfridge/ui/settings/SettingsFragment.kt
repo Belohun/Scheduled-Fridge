@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.utils.Preferences
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.settings_add_day_layout.*
 
@@ -28,6 +29,7 @@ class SettingsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        requireActivity().appBar_layout.elevation = 8F
         val preferences = Preferences(requireContext())
         val isDark = preferences.isNightMode()
         val daysBeforeExpired = preferences.getDaysBeforeExpiration()
@@ -43,7 +45,9 @@ class SettingsFragment : Fragment() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 preferences.setNightMode(true)
 
+
             }else{
+
                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 preferences.setNightMode(false)
             }
@@ -59,7 +63,7 @@ class SettingsFragment : Fragment() {
             subOptions_layout_settings.isVisible = isChecked
             if (isChecked){
                 preferences.setNotifications(true)
-              //  NotificationManagerCompat.from(requireContext()).cancelAll()
+
 
             }else{
                 preferences.setNotifications(false)
@@ -86,7 +90,7 @@ class SettingsFragment : Fragment() {
                 mAlertDialog.dismiss()
             }
             mAlertDialog.settings_add_day_btn_add.setOnClickListener{
-                var noErrors: Boolean
+                val noErrors: Boolean
                 when {
                     mAlertDialog.settings_add_day_AutoCompleteTextView.text.isEmpty() -> {
                         noErrors = false
@@ -112,5 +116,10 @@ class SettingsFragment : Fragment() {
 
         }
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().appBar_layout.elevation = 8F
     }
 }

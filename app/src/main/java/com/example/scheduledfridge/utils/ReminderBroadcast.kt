@@ -29,7 +29,8 @@ class ReminderBroadcast: BroadcastReceiver() {
         if(isNotificationEnabled) {
             var i = 0
             while (i < listOfScheduledNotification.size ) {
-                if (listOfScheduledNotification[i].toInt() == daysLeft.toInt()) {
+                if (listOfScheduledNotification[i].toInt() == daysLeft.toInt() || daysLeft.toInt() == 0)
+                {
                     notificationManager.sendNotification(message!!, context, id, name!!, image!!)
                 }
                 i++

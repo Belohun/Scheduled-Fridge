@@ -57,8 +57,10 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         setHasOptionsMenu(true)
+
         createNotificationChannel(getString(R.string.notification_chanel_id),getString(R.string.notification_title))
             sortByArrayAdapter = ArrayAdapter.createFromResource(
             requireContext(),
@@ -69,6 +71,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        requireActivity().appBar_layout.elevation = 0F
         actionModeCallback = ActionModeCallback()
         homeViewModel.setSelectingMode(false)
         preferences = Preferences(requireContext())
@@ -176,11 +179,11 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
                 when(direction){
                     ItemTouchHelper.LEFT ->{
-                        deleteProduct(currentProducts[position])
+                        deleteProduct(currentProducts[position],true)
 
                     }
                     RIGHT ->{
-                       deleteProduct(currentProducts[position])
+                       deleteProduct(currentProducts[position],false)
                     }
 
                 }
@@ -372,7 +375,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             sortOptionsList[0] -> {
                 tempList = allProducts.sortedByDescending {
                     LocalDate.parse(
-                        it.productAdedDate,
+                        it.productAddedDate,
                         dateTimeFormatter
                     )
                 }.asReversed()
@@ -381,7 +384,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             sortOptionsList[1] -> {
                 tempList = allProducts.sortedByDescending {
                     LocalDate.parse(
-                        it.productAdedDate,
+                        it.productAddedDate,
                         dateTimeFormatter
                     )
                 }
@@ -443,6 +446,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
     override fun onResume() {
         super.onResume()
+        requireActivity().appBar_layout.elevation = 0F
         sortByArrayAdapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.sortBy,
@@ -455,13 +459,13 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             when(menuItem!!.itemId){
                 R.id.ate_menu_actionSelecting ->{
                     homeViewModel.getSelectedProducts().forEach{
-                        deleteProduct(it)
+                        deleteProduct(it,true)
                     }
                     mode!!.finish()
                 }
                 R.id.trashed_menu_actionSelecting ->{
                     homeViewModel.getSelectedProducts().forEach{
-                        deleteProduct(it)
+                        deleteProduct(it,false)
                     }
                     mode!!.finish()
 
@@ -491,8 +495,8 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
         }
     }
-    private fun deleteProduct(product: Product){
-        homeViewModel.deleteProduct(product)
+    private fun deleteProduct(product: Product,eaten:Boolean){
+        homeViewModel.deleteProduct(product,eaten)
         cancelNotification(requireContext(),product.id)
     }
 

@@ -10,6 +10,6 @@ data class Product(
     var productName: String,
     var productType: String,
     var productExpirationDate: String,
-    var productAdedDate: String,
+    var productAddedDate: String,
     var quantity: Int
     )

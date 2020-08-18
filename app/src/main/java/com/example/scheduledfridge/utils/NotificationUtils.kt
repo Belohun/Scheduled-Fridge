@@ -64,8 +64,7 @@ fun generateNotification(
     val daysLeft = ViewUtils().getDaysLeft(productExpirationDate, context)
             val currentDate = System.currentTimeMillis()
             val millsInDay = 86400000
-            val timeToBeAdded: Long = millsInDay * (daysLeft)
-            val timeToBeAddedTemp = 1000 * 5
+           // val timeToBeAddedTemp = 1000 * 5
             val message: String =
                 if(daysLeft <1){
                     context.getString(R.string.Expired)
@@ -82,7 +81,7 @@ fun generateNotification(
             val pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0)
             alarmManager.set(
                     AlarmManager.RTC_WAKEUP,
-                    currentDate + timeToBeAddedTemp,
+                    currentDate + millsInDay,
                     pendingIntent
                 )
         }

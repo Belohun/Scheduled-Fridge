@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 
 import com.example.scheduledfridge.R
+import kotlinx.android.synthetic.main.app_bar_main.*
 
 class HistoryFragment : Fragment() {
     private val  historyViewModel: HistoryViewModel by activityViewModels()
@@ -27,5 +28,10 @@ class HistoryFragment : Fragment() {
             textView.text = it
         })
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().appBar_layout.elevation = 8F
     }
 }

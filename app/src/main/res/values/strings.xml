@@ -55,6 +55,9 @@
     <string name="daysBeforeExpired">DaysBeforeExpired</string>
     <string name="select_day">Select day</string>
     <string name="thereIsAlreadySameDay">There is already same added day!</string>
+    <string name="deletedProducts">Deleted Products</string>
+    <string name="eaten">Eaten</string>
+    <string name="thrownAway">Thrown Away</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>

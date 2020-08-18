@@ -18,9 +18,8 @@ import net.danlew.android.joda.JodaTimeAndroid
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-   // var searchView: SearchView?= null
-
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -34,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         if(isDark) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }else{
-
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
         appBarConfiguration = AppBarConfiguration(setOf(
