@@ -77,7 +77,7 @@
                 />
         </com.google.android.material.textfield.TextInputLayout>
         <ImageButton
-            android:backgroundTint="@color/colorBackground"
+            android:backgroundTint="none"
             android:id="@+id/calendar_ImageButton"
             app:layout_constraintWidth_percent="0.08"
             android:layout_margin="4dp"

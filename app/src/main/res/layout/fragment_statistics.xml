@@ -33,7 +33,7 @@
         />
 
     <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/statistics_PieChart"
+        android:id="@+id/statistics_deletedProducts_PieChart"
         android:layout_width="match_parent"
         android:layout_height="375dp"
         android:layout_marginBottom="8dp"/>
@@ -50,14 +50,15 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="5dp"
         android:src="@drawable/bottom_stroke"
 
         />
-        <com.github.mikephil.charting.charts.BarChart
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/statistics_addedProducts_PieChart"
             android:layout_width="match_parent"
             android:layout_height="375dp"
             />
