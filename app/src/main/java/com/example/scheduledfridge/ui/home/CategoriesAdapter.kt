@@ -3,6 +3,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
@@ -41,7 +42,7 @@ class CategoriesAdapter internal constructor(val context: Context?): RecyclerVie
     override fun onBindViewHolder(holder: CategoriesAdapter.ViewHolder, position: Int) {
         var isOn = true
         val current = categories[position]
-        holder.layout.background = context!!.getDrawable(R.drawable.category_background)
+        holder.layout.background = ContextCompat.getDrawable(context!!,R.drawable.category_background)
 
       holder.categoryName.text = current
 
@@ -50,13 +51,13 @@ class CategoriesAdapter internal constructor(val context: Context?): RecyclerVie
               if (isOn){
                   isOn = false
                   categoriesTemp.remove(current)
-                  holder.layout.background = context.getDrawable(R.drawable.category_background_off)
+                  holder.layout.background = ContextCompat.getDrawable(context,R.drawable.category_background_off)
 
 
               }else {
                   categoriesTemp.add(current)
                   isOn = true
-                  holder.layout.background = context.getDrawable(R.drawable.category_background)
+                  holder.layout.background = ContextCompat.getDrawable(context,R.drawable.category_background)
 
               }
             setCurrentCategories(categoriesTemp)

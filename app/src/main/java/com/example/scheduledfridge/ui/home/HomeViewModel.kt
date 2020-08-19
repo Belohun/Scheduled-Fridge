@@ -1,10 +1,7 @@
 package com.example.scheduledfridge.ui.home
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.scheduledfridge.database.ApplicationRepository
-import com.example.scheduledfridge.database.Product
-import com.example.scheduledfridge.database.ProductDatabase
-import com.example.scheduledfridge.database.Statistic
+import com.example.scheduledfridge.database.*
 import kotlinx.coroutines.launch
 
 
@@ -19,7 +16,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     init {
         val productDao = ProductDatabase.getDatabase(application).productDao()
         val statisticsDao = ProductDatabase.getDatabase(application).statisticsDao()
-        repository = ApplicationRepository(productDao,statisticsDao)
+        val historyDao = ProductDatabase.getDatabase(application).historyDao()
+        repository = ApplicationRepository(productDao,statisticsDao,historyDao)
         allProducts = repository.allProducts
         allStatistic = repository.allStatistic
         isSelectingMode.value = false
@@ -40,8 +38,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             repository.deleteProduct(product,eaten)
         }
-
-
     }
     fun setSelectingMode (isSelected: Boolean){
         isSelectingMode.value = isSelected

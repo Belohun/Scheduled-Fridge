@@ -21,7 +21,8 @@
             android:id="@+id/type_Image"
             android:layout_width="70dp"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_animal_origin" />
+            android:src="@drawable/ic_animal_origin"
+           />
 
         <TextView
          app:layout_constraintStart_toEndOf="@id/type_Image"
@@ -34,7 +35,7 @@
             style="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
             android:textStyle="bold"
 
-            android:text="Product name"
+
 
             />
 

@@ -15,7 +15,8 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
     init {
         val productDao = ProductDatabase.getDatabase(application).productDao()
         val statisticsDao = ProductDatabase.getDatabase(application).statisticsDao()
-        repository = ApplicationRepository(productDao,statisticsDao)
+        val historyDao = ProductDatabase.getDatabase(application).historyDao()
+        repository = ApplicationRepository(productDao,statisticsDao,historyDao)
         allStatistic = repository.allStatistic
     }
 

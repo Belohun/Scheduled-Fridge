@@ -3,11 +3,9 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.example.scheduledfridge.R
@@ -20,9 +18,9 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 
 class ViewUtils {
-   fun setImage(imageView: ImageView,product: Product,context: Context) {
+   fun setImage(imageView: ImageView,type: String,context: Context) {
 
-       when(product.productType){
+       when(type){
            "Vegetables"->{
                imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_vegetables))
            }
@@ -57,7 +55,7 @@ class ViewUtils {
    }
 
 fun returnIconDrawable(type: String,context: Context): Bitmap? {
-    return  when (type) {
+    when (type) {
         "Vegetables" -> {
             return BitmapFactory.decodeResource(
                 context.resources,
@@ -107,17 +105,17 @@ fun returnIconDrawable(type: String,context: Context): Bitmap? {
             )
         }
         else -> {
-                return BitmapFactory.decodeResource(
-                    context.resources,
-                    R.drawable.notification_others
-                )
+            return BitmapFactory.decodeResource(
+                context.resources,
+                R.drawable.notification_others
+            )
         }
 
     }
 }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     fun setDaysBetween(textView: TextView, context: Context, product: Product) {
         val daysLeft: Long
         val texViewText: String
@@ -144,7 +142,6 @@ fun returnIconDrawable(type: String,context: Context): Bitmap? {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getDaysLeft(expirationDate: String, context: Context): Long {
         val formatter =
             DateTimeFormatter.ofPattern(context.getString(R.string.datePattern))
@@ -180,10 +177,10 @@ fun returnIconDrawable(type: String,context: Context): Bitmap? {
      fun isNoErrorsAddProduct(dialogView: View, noErrors: Boolean, context: Context): Boolean {
         var noErrors1 = noErrors
         when {
-            dialogView.productName_editText.text!!.length > 26 -> {
+            dialogView.productName_editText.text!!.length > 20 -> {
                 noErrors1 = false
                 dialogView.productName_editText.error =
-                    context.getString(R.string.max26Char)
+                    context.getString(R.string.max20Char)
             }
             dialogView.productName_editText.text!!.isEmpty() -> {
                 noErrors1 = false

@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.PopupMenu
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -103,15 +104,15 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
         if (selectedProducts.contains(current)) {
             Log.d("Contains", current.productName)
             holder.itemView.background =
-                context!!.getDrawable(R.drawable.product_background_selected)
+                ContextCompat.getDrawable(context!!,R.drawable.product_background_selected)
             isSelected1 = true
         } else {
-            holder.itemView.background = context!!.getDrawable(R.drawable.product_background)
+            holder.itemView.background = ContextCompat.getDrawable(context!!,R.drawable.product_background)
             isSelected1 = false
         }
         holder.productName.text = current.productName
         holder.quantity.text = current.quantity.toString()
-        ViewUtils().setImage(holder.icon, current, context)
+        ViewUtils().setImage(holder.icon, current.productType, context)
         ViewUtils().setDaysBetween(holder.daysLeft, context, current)
         return isSelected1
     }
@@ -129,12 +130,12 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
             val selectedProducts = homeViewModel.getSelectedProducts()
             if (isSelected1) {
                 isSelected1 = false
-                it.background = context.getDrawable(R.drawable.product_background)
+                it.background = ContextCompat.getDrawable(context,R.drawable.product_background)
                 selectedProducts.remove(current)
 
             } else {
                 isSelected1 = true
-                it.background = context.getDrawable(R.drawable.product_background_selected)
+                it.background = ContextCompat.getDrawable(context,R.drawable.product_background_selected)
                 selectedProducts.add(current)
             }
             homeViewModel.setSelectedProducts(selectedProducts)
@@ -167,12 +168,12 @@ class ListOfProductsAdapter internal constructor(val context: Context?, private 
         val isSelectedLocal: Boolean
         val selectedProducts = homeViewModel.getSelectedProducts()
         if (isSelected) {
-            holder.itemView.background = context.getDrawable(R.drawable.product_background)
+            holder.itemView.background = ContextCompat.getDrawable(context,R.drawable.product_background)
             selectedProducts.remove(current)
             isSelectedLocal = false
         } else {
 
-            holder.itemView.background = context.getDrawable(R.drawable.product_background_selected)
+            holder.itemView.background = ContextCompat.getDrawable(context,R.drawable.product_background_selected)
             if (!homeViewModel.getSelectingMode()) {
                 homeViewModel.setSelectingMode(true)
             }

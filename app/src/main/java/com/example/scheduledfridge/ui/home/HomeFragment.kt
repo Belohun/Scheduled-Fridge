@@ -1,5 +1,4 @@
 package com.example.scheduledfridge.ui.home
-import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.graphics.Canvas
@@ -145,19 +144,18 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
         recyclerView_home.adapter = listOfProductsAdapter
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            nestedScrollView_home.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
-                if (scrollY > oldScrollY) {
-                    fab.hide()
-                }
-                if (scrollY < oldScrollY && actionMode==null) {
-                    fab.show()
-                }
-                if (scrollY == 0 && actionMode==null) {
-                   fab.show()
-                }
+        nestedScrollView_home.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            if (scrollY > oldScrollY) {
+                fab.hide()
+            }
+            if (scrollY < oldScrollY && actionMode==null) {
+                fab.show()
+            }
+            if (scrollY == 0 && actionMode==null) {
+               fab.show()
+            }
 
-            })}
+        })
 
 
 
@@ -234,7 +232,7 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
 
 
-    @SuppressLint("NewApi")
+
     private fun buttonAddOnClick(
         dialogView: View,
         mAlertDialog: AlertDialog
@@ -352,7 +350,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }
-    @SuppressLint("NewApi")
     private fun sortProducts(sortingOption: String) {
         val sortOptionsList = resources.getStringArray(R.array.sortBy)
         val dateTimeFormatter: DateTimeFormatter =
@@ -499,5 +496,6 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         homeViewModel.deleteProduct(product,eaten)
         cancelNotification(requireContext(),product.id)
     }
+
 
 }

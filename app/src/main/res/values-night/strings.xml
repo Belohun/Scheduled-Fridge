@@ -37,13 +37,12 @@
     <string name="daysLeftToExpire">days left to expire!</string>
     <string name="notificationEnabled">notificationEnabled</string>
     <string name="nightMode">NightMode</string>
-    <string name="max26Char">Name should be max length of 26 characters!</string>
+    <string name="max20Char">Name should be max length of 20 characters!</string>
     <string name="fieldMustNotBeEmpty">"Field must not be empty "</string>
     <string name="quantityMax5Char">Quantity should be max length of 5 numbers!</string>
     <string name="selectOneOfTypes">Select one of types!</string>
     <string name="scheduleWhenToNotify">Schedule when to notify</string>
     <string name="howManyDaysBefore">How many days before expiration:</string>
-    <string name="atWhatTime">At what time</string>
     <string name="sortBy">Sort by:</string>
     <string name="appPreferences">AppPreferences</string>
     <string name="sortingSelected">SortingSelected</string>
@@ -51,13 +50,13 @@
     <string name="select">Select</string>
     <string name="Edit">Edit</string>
     <string name="selectProducts">Select products</string>
-    <string name="sameWhenAdded">Same time when added</string>
     <string name="daysBeforeExpired">DaysBeforeExpired</string>
     <string name="select_day">Select day</string>
     <string name="thereIsAlreadySameDay">There is already same added day!</string>
     <string name="deletedProducts">Deleted Products</string>
     <string name="eaten">Eaten</string>
     <string name="thrownAway">Thrown Away</string>
+    <string name="AddedProducts">Added Products</string>
     <string-array name="types">
         <item>Vegetables</item>
         <item>Fruits</item>

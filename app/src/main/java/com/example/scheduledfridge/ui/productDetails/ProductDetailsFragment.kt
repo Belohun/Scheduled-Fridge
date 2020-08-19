@@ -51,7 +51,7 @@ class ProductDetailsFragment : Fragment() {
         expirationDate_textView_product_details.text = it.productExpirationDate
         addedDate_textView_product_details.text = it.productAddedDate
         ViewUtils()
-            .setImage(type_Image_product_details, it, requireContext())
+            .setImage(type_Image_product_details, it.productType, requireContext())
         ViewUtils()
             .setDaysBetween(daysLeft_textView_product_details, requireContext(), it)
         type_Image_product_details.transitionName = it.id.toString()

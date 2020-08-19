@@ -1,6 +1,5 @@
 package com.example.scheduledfridge.ui.statistics
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,7 +36,6 @@ class StatisticsFragment : Fragment() {
         })
     }
 
-    @SuppressLint("NewApi")
     private fun setUpPieChart(it: List<Statistic>) {
         var eatenCount = 0.00
         it.forEach { statistic ->
@@ -46,7 +44,6 @@ class StatisticsFragment : Fragment() {
             }
         }
         val thrownAwayCount = it.count() - eatenCount
-        val eatenPercent = eatenCount/it.count() * 100
         val eatenStatistics = ArrayList<PieEntry>()
         eatenStatistics.add(PieEntry(eatenCount.toFloat(), getString(R.string.eaten)))
         eatenStatistics.add(PieEntry(thrownAwayCount.toFloat(), getString(R.string.thrownAway)))
