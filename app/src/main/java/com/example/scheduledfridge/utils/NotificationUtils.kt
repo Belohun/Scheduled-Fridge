@@ -64,7 +64,7 @@ fun generateNotification(
     val daysLeft = ViewUtils().getDaysLeft(productExpirationDate, context)
             val currentDate = System.currentTimeMillis()
             val millsInDay = 86400000
-           // val timeToBeAddedTemp = 1000 * 5
+
             val message: String =
                 if(daysLeft <1){
                     context.getString(R.string.Expired)

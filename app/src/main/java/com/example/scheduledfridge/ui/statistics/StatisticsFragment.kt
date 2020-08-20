@@ -34,7 +34,7 @@ class StatisticsFragment : Fragment() {
         statisticsViewModel.allStatistic.observe(viewLifecycleOwner, Observer {
             setUpDeletedPieChart(it)
         })
-        historyViewModel.allHistory.observe(viewLifecycleOwner, Observer { it ->
+        historyViewModel.allHistory.observe(viewLifecycleOwner, Observer {
             it.forEach { historyProduct ->
                 if(historyProduct.action=="Added"){
                     historyTypesAddedProducts.add(historyProduct.type)

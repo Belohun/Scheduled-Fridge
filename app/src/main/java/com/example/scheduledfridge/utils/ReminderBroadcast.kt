@@ -1,5 +1,5 @@
 package com.example.scheduledfridge.utils
-import android.annotation.SuppressLint
+
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import com.example.scheduledfridge.R
 
 class ReminderBroadcast: BroadcastReceiver() {
-    @SuppressLint("NewApi")
     override fun onReceive(context: Context?, intent: Intent?) {
 
         val notificationManager = ContextCompat.getSystemService(
