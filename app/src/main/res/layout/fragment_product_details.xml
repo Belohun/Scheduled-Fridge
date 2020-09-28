@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -23,7 +24,7 @@
         app:layout_constraintBottom_toBottomOf="@id/type_Image_product_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="7 days"
+
         style="@style/TextAppearance.MdcTypographyStyles.Headline3"/>
 
     <LinearLayout
@@ -60,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
-                android:text="Milk" />
+                 />
         </LinearLayout>
         <ImageView
             android:layout_marginStart="8dp"
@@ -71,7 +72,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:elevation="5dp"
-            android:src="@drawable/bottom_stroke"/>
+            android:src="@drawable/bottom_stroke"
+            />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -93,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
-                android:text="Animal Origin" />
+              />
         </LinearLayout>
         <ImageView
             android:layout_marginStart="8dp"
@@ -104,7 +106,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:elevation="5dp"
-            android:src="@drawable/bottom_stroke"/>
+            android:src="@drawable/bottom_stroke"
+          />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -124,9 +127,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1"
                 style="@style/TextAppearance.MdcTypographyStyles.Headline5"
-                />
+                tools:ignore="HardcodedText" />
         </LinearLayout>
         <ImageView
             android:layout_marginStart="8dp"
@@ -137,7 +139,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:elevation="5dp"
-            android:src="@drawable/bottom_stroke"/>
+            android:src="@drawable/bottom_stroke"
+           />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -158,7 +161,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="01/02/2020"
+
                 style="@style/TextAppearance.MdcTypographyStyles.Headline5"
                 />
         </LinearLayout>
@@ -171,7 +174,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:elevation="5dp"
-            android:src="@drawable/bottom_stroke"/>
+            android:src="@drawable/bottom_stroke"
+            />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -191,7 +195,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="01/02/2019"
+
                 style="@style/TextAppearance.MdcTypographyStyles.Headline5"
                 />
         </LinearLayout>
@@ -204,7 +208,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:elevation="5dp"
-            android:src="@drawable/bottom_stroke"/>
+            android:src="@drawable/bottom_stroke"
+            />
     </LinearLayout>
 
 

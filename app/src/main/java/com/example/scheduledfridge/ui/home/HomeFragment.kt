@@ -1,14 +1,18 @@
 package com.example.scheduledfridge.ui.home
-import android.annotation.SuppressLint
-import android.app.DatePickerDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.graphics.Canvas
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,46 +20,149 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.scheduledfridge.R
 import com.example.scheduledfridge.database.Product
 import com.example.scheduledfridge.ui.productDetails.ProductDetailsViewModel
+import com.example.scheduledfridge.utils.Preferences
+import com.example.scheduledfridge.utils.ViewUtils
+import com.example.scheduledfridge.utils.cancelNotification
+import com.example.scheduledfridge.utils.generateNotification
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.add_product_layout.*
 import kotlinx.android.synthetic.main.add_product_layout.view.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
     androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
-    private lateinit var homeViewModel: HomeViewModel
+    private  val homeViewModel: HomeViewModel by activityViewModels()
     private val productDetailsViewModel: ProductDetailsViewModel by activityViewModels()
-    private var adapter: ListOfProductsAdapter? = null
-    var allProducts : List<Product> = emptyList()
+    private var listOfProductsAdapter: ListOfProductsAdapter? = null
+    private var categoriesAdapter: CategoriesAdapter? = null
+    private var  currentProducts : List<Product> = emptyList()
+    private var allProducts : List<Product> = emptyList()
+    private lateinit var  notificationManager: NotificationManager
+    private var  sortByArrayAdapter: ArrayAdapter<CharSequence>? = null
+    private var preferences: Preferences? = null
+     var actionMode: ActionMode? = null
+    private var actionModeCallback: ActionModeCallback? = null
 
-    @SuppressLint("NewApi")
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         setHasOptionsMenu(true)
+
+        createNotificationChannel(getString(R.string.notification_chanel_id),getString(R.string.notification_title))
+            sortByArrayAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.sortBy,
+            R.layout.support_simple_spinner_dropdown_item
+        )
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        adapter = ListOfProductsAdapter(context)
-        setAdapter(recyclerView_home, adapter!!)
-        homeViewModel.allProducts.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            allProducts=it
-            adapter!!.setProducts(allProducts)
+        requireActivity().appBar_layout.elevation = 0F
+        actionModeCallback = ActionModeCallback()
+        homeViewModel.setSelectingMode(false)
+        preferences = Preferences(requireContext())
+        autoCompleteView_sortBy.setAdapter(sortByArrayAdapter)
+        val sortingOptionSaved = preferences!!.getSorting()
+        autoCompleteView_sortBy.setText(sortingOptionSaved)
+
+        autoCompleteView_sortBy.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, pos, _ ->
+                val sortOptionsList = resources.getStringArray(R.array.sortBy)
+                val current = sortOptionsList[pos]
+                sortProducts(current)
+
+            }
+        val typesArrayAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.types,
+            R.layout.support_simple_spinner_dropdown_item
+        )
+
+
+
+        notificationManager =
+            ContextCompat.getSystemService(
+                requireContext(),
+                NotificationManager::class.java
+            )!!
+
+        listOfProductsAdapter = ListOfProductsAdapter(context,homeViewModel)
+
+        categoriesAdapter = CategoriesAdapter(context)
+        recyclerView_Categories.adapter =categoriesAdapter
+        homeViewModel.isSelectingMode.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            actionMode = if(it==false){
+                null
+            }else {
+                requireActivity().startActionMode(actionModeCallback)
+            }
         })
-        adapter!!.currentProduct.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        homeViewModel.allProducts.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            currentProducts=it
+            allProducts=it
+            val categories = returnPresentCategories(allProducts)
+            if (categories.size == 1){
+                categoriesAdapter!!.setCategories(emptyList())
+            }else {
+                categoriesAdapter!!.setCategories(categories)
+            }
+                listOfProductsAdapter!!.setProducts(currentProducts)
+            val isScrollable =isScrollable(nestedScrollView_home)
+            if(!isScrollable){
+                fab.show()
+            }
+            sortProducts(sortingOptionSaved)
+        })
+
+        categoriesAdapter!!.currentCategories.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if(it!=null){
+                val products = categorizeProducts(allProducts,it)
+                currentProducts = products
+                listOfProductsAdapter!!.setProducts(products)
+                val isScrollable =isScrollable(nestedScrollView_home)
+                if(!isScrollable && actionMode==null){
+                    fab.show()
+                }
+            }
+        })
+        listOfProductsAdapter!!.currentProduct.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             productDetailsViewModel.setCurrentProduct(it)
         })
+
+        recyclerView_home.adapter = listOfProductsAdapter
+
+        nestedScrollView_home.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            if (scrollY > oldScrollY) {
+                fab.hide()
+            }
+            if (scrollY < oldScrollY && actionMode==null) {
+                fab.show()
+            }
+            if (scrollY == 0 && actionMode==null) {
+               fab.show()
+            }
+
+        })
+
+
+
+
+
         recyclerView_home.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
+        recyclerView_Categories.layoutManager = LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
         val simpleCallBackHelper = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or  RIGHT) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -67,12 +174,14 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
+
                 when(direction){
                     ItemTouchHelper.LEFT ->{
-                        homeViewModel.delete(allProducts[position])
+                        deleteProduct(currentProducts[position],true)
+
                     }
                     RIGHT ->{
-                        homeViewModel.delete(allProducts[position])
+                       deleteProduct(currentProducts[position],false)
                     }
 
                 }
@@ -89,25 +198,26 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         }
         val itemTouchHelper = ItemTouchHelper(simpleCallBackHelper)
         itemTouchHelper.attachToRecyclerView(recyclerView_home)
-        fabOnClick(fab)
+        fabOnClick(fab,typesArrayAdapter)
         super.onViewCreated(view, savedInstanceState)
     }
-    private fun fabOnClick(fab: FloatingActionButton) {
+
+    private fun isScrollable(scrollView: NestedScrollView): Boolean {
+        val childHeight = scrollView.height
+        return scrollView.height < childHeight + scrollView.paddingTop + scrollView.paddingBottom
+    }
+
+    private fun fabOnClick(fab: FloatingActionButton, adapter: ArrayAdapter<CharSequence>) {
         fab.setOnClickListener {
             val dialogView =
                 LayoutInflater.from(this.activity).inflate(R.layout.add_product_layout, null)
             val mBuilder = AlertDialog.Builder(this.requireActivity())
                 .setView(dialogView)
             val mAlertDialog = mBuilder.show()
-            val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
-                requireContext(),
-                R.array.types,
-                R.layout.support_simple_spinner_dropdown_item
-            )
 
 
             mAlertDialog.type_AutoCompleteTextView.setAdapter(adapter)
-            calendarOnClick(dialogView, mAlertDialog)
+            ViewUtils().calendarOnClick(dialogView, mAlertDialog,requireContext())
 
             buttonAddOnClick(dialogView, mAlertDialog)
             mAlertDialog.type_AutoCompleteTextView.setOnClickListener{
@@ -120,30 +230,9 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         }
     }
 
-    private fun calendarOnClick(
-        dialogView: View,
-        mAlertDialog: AlertDialog
-    ) {
-        dialogView.calendar_ImageButton.setOnClickListener {
-            val c = Calendar.getInstance()
-            val year = c.get(Calendar.YEAR)
-            val month = c.get(Calendar.MONTH)
-            val day = c.get(Calendar.DAY_OF_MONTH)
-            val dpd = DatePickerDialog(
-                this.requireActivity(),
-                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                    val date = "" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year
-                    mAlertDialog.date_TextInputEditText.setText(date)
-                },
-                year,
-                month,
-                day
-            )
-            dpd.show()
-        }
-    }
 
-    @SuppressLint("NewApi")
+
+
     private fun buttonAddOnClick(
         dialogView: View,
         mAlertDialog: AlertDialog
@@ -151,77 +240,41 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
         dialogView.btn_add.setOnClickListener {
 
             val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            val formatter =
+                DateTimeFormatter.ofPattern(requireContext().getString(R.string.datePattern))
             val formatted = current.format(formatter)
             var noErrors = true
-            when {
-                dialogView.add_product_name_text.text!!.length > 26 -> {
-                    noErrors=false
-                    dialogView.add_product_name_text.error="Name should be max length of 26 characters!"
-                }
-                dialogView.add_product_name_text.text!!.isEmpty() -> {
-                    noErrors=false
-                    dialogView.add_product_name_text.error="Field must not be empty!"
-                }
-                else -> {
-                    dialogView.add_product_name_text.error = null
-                }
-            }
-            when {
-                dialogView.quantity_TextInputEditText.text!!.isEmpty() -> {
-                    noErrors=false
-                    dialogView.quantity_TextInputEditText.error="Field must not be empty!"
-
-                }
-                dialogView.quantity_TextInputEditText.text!!.length > 5 -> {
-                    noErrors=false
-                    dialogView.quantity_TextInputEditText.error="Name should be max length of 5 characters!"
-                }
-                else -> {
-                    dialogView.quantity_TextInputEditText.error = null
-                }
-            }
-            if( dialogView.type_AutoCompleteTextView!!.text.isEmpty()){
-                noErrors=false
-                dialogView.type_AutoCompleteTextView.error ="Select one of types!"
-            }
-            else {
-                dialogView.type_AutoCompleteTextView.error = null
-            }
-
+            noErrors = ViewUtils().isNoErrorsAddProduct(dialogView, noErrors,requireContext())
             val id: Int = if (allProducts.isEmpty()) {
                 1
             } else {
-                allProducts.last().id + 1
+                allProducts.maxBy { it.id }!!.id + 1
             }
 
 
-            if(noErrors){
+            if (noErrors) {
                 val product = Product(
                     id,
-                    mAlertDialog.add_product_name_text.text.toString(),
+                    mAlertDialog.productName_editText.text.toString(),
                     mAlertDialog.type_AutoCompleteTextView.text.toString(),
                     mAlertDialog.date_TextInputEditText.text.toString(),
                     formatted.toString()
                     ,
                     mAlertDialog.quantity_TextInputEditText.text.toString().toInt()
                 )
-
-                homeViewModel.insert(product)
+                if (product.productExpirationDate != "") {
+                    generateNotification(product.id,product.productExpirationDate,product.productName,product.productType,requireContext())
+                }
+                homeViewModel.insertProduct(product)
                 mAlertDialog.dismiss()
             }
 
-            }
+        }
     }
 
-    private fun setAdapter(
-        recyclerView: RecyclerView,
-        adapter: ListOfProductsAdapter
-    ){
 
-        recyclerView.adapter = adapter
 
-    }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main, menu)
@@ -232,31 +285,217 @@ class HomeFragment : Fragment(),MenuItem.OnActionExpandListener,
 
     }
     override fun onQueryTextSubmit(p0: String?): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun onQueryTextChange(p0: String?): Boolean {
     if(p0 == null || p0.trim().isEmpty()){
-        adapter!!.setProducts(allProducts)
+        listOfProductsAdapter!!.setProducts(currentProducts)
         return false
     }
         val newText = p0.toLowerCase(Locale.ROOT)
         val filteredNewsList: ArrayList<Product> = ArrayList()
-        allProducts.forEach{
+        currentProducts.forEach{
             val name = it.productName.toLowerCase(Locale.ROOT)
-            val type = it.productType.toLowerCase(Locale.ROOT)
-            if(name.contains(newText) or type.contains(newText) or it.quantity.toString().contains(newText)){
-                filteredNewsList.add(Product(it.id,it.productName,it.productType,it.productExpirationDate,it.productAdedDate,it.quantity))
+            if(name.contains(newText) or it.quantity.toString().contains(newText)){
+                filteredNewsList.add(it)
             }
         }
-        adapter!!.setProducts(filteredNewsList)
+        listOfProductsAdapter!!.setProducts(filteredNewsList)
         return true
     }
     override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
-        TODO("Not yet implemented")
+       return true
     }
     override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
-        adapter!!.setProducts(allProducts)
+        listOfProductsAdapter!!.setProducts(currentProducts)
         return true
     }
+    private fun categorizeProducts(allProducts: List<Product>,currentCategories: List<String>): ArrayList<Product> {
+         val tempProducts: ArrayList<Product> = ArrayList()
+        allProducts.forEach{
+            if(currentCategories.contains(it.productType)){
+                tempProducts.add(it)
+            }
+        }
+        return tempProducts
+
+    }
+    private fun returnPresentCategories(allProducts: List<Product>): ArrayList<String> {
+        val categories: ArrayList<String> = ArrayList()
+        allProducts.forEach {
+            if(!categories.contains(it.productType)){
+                categories.add(it.productType)
+            }
+        }
+        return categories
+
+    }
+    private fun createNotificationChannel(channelId: String, channelName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
+
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+
+
+            val notificationManager = requireActivity().getSystemService(
+                NotificationManager::class.java
+            )
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+    }
+    private fun sortProducts(sortingOption: String) {
+        val sortOptionsList = resources.getStringArray(R.array.sortBy)
+        val dateTimeFormatter: DateTimeFormatter =
+            DateTimeFormatter.ofPattern(requireContext().getString(R.string.datePattern))
+        var tempList: List<Product> = emptyList()
+        val tempListWithNullDates: ArrayList<Product> = ArrayList()
+        val tempListWithoutNullDates: ArrayList<Product> = ArrayList()
+        preferences = Preferences(requireContext())
+        fun divideAllProducts() {
+            allProducts.forEach {
+                if (it.productExpirationDate == "") {
+                    tempListWithNullDates.add(it)
+                } else {
+                    tempListWithoutNullDates.add(it)
+                }
+            }
+
+        }
+        when (sortingOption) {
+            sortOptionsList[0] -> {
+                tempList = allProducts.sortedByDescending {
+                    LocalDate.parse(
+                        it.productAddedDate,
+                        dateTimeFormatter
+                    )
+                }.asReversed()
+
+            }
+            sortOptionsList[1] -> {
+                tempList = allProducts.sortedByDescending {
+                    LocalDate.parse(
+                        it.productAddedDate,
+                        dateTimeFormatter
+                    )
+                }
+
+            }
+            sortOptionsList[2] -> {
+                divideAllProducts()
+                val localTempList: ArrayList<Product> = ArrayList()
+                localTempList.addAll(tempListWithoutNullDates.sortedByDescending {
+                    LocalDate.parse(
+                        it.productExpirationDate,
+                        dateTimeFormatter
+                    )
+                }.asReversed())
+                localTempList.addAll(tempListWithNullDates)
+                tempList = localTempList
+            }
+            sortOptionsList[3] -> {
+                divideAllProducts()
+                val localTempList: ArrayList<Product> = ArrayList()
+                localTempList.addAll(tempListWithNullDates)
+                localTempList.addAll(tempListWithoutNullDates.sortedByDescending {
+                    LocalDate.parse(
+                        it.productExpirationDate,
+                        dateTimeFormatter
+                    )
+                })
+                tempList = localTempList
+            }
+            sortOptionsList[4] -> {
+                tempList =
+                    allProducts.sortedByDescending { it.productName }.asReversed()
+            }
+            sortOptionsList[5] -> {
+                tempList = allProducts.sortedByDescending { it.productName }
+
+            }
+            sortOptionsList[6] -> {
+                tempList = allProducts.sortedBy { it.productType }
+            }
+
+        }
+        preferences!!.setSorting(sortingOption)
+        allProducts = tempList
+        currentProducts= tempList
+        listOfProductsAdapter!!.setProducts(tempList)
+    }
+
+    override fun onStop() {
+        super.onStop()
+    requireActivity().appBar_layout.elevation = 8F
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireActivity().appBar_layout.elevation = 0F
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().appBar_layout.elevation = 0F
+        sortByArrayAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.sortBy,
+            R.layout.support_simple_spinner_dropdown_item
+        )
+        autoCompleteView_sortBy.setAdapter(sortByArrayAdapter)
+    }
+     inner class  ActionModeCallback: ActionMode.Callback {
+        override fun onActionItemClicked(mode: ActionMode?, menuItem: MenuItem?): Boolean {
+            when(menuItem!!.itemId){
+                R.id.ate_menu_actionSelecting ->{
+                    homeViewModel.getSelectedProducts().forEach{
+                        deleteProduct(it,true)
+                    }
+                    mode!!.finish()
+                }
+                R.id.trashed_menu_actionSelecting ->{
+                    homeViewModel.getSelectedProducts().forEach{
+                        deleteProduct(it,false)
+                    }
+                    mode!!.finish()
+
+                }
+            }
+           return false
+        }
+
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            fab.hide()
+            mode!!.menuInflater.inflate(R.menu.menu_action_selecting , menu)
+            mode.title = requireContext().getString(R.string.selectProducts)
+            return true
+        }
+
+        override fun onPrepareActionMode(p0: ActionMode?, p1: Menu?): Boolean {
+        return false
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            fab.show()
+            actionMode = null
+            homeViewModel.setSelectingMode(false)
+            homeViewModel.setSelectedProducts(ArrayList())
+            listOfProductsAdapter!!.setProducts(currentProducts)
+
+
+        }
+    }
+    private fun deleteProduct(product: Product,eaten:Boolean){
+        homeViewModel.deleteProduct(product,eaten)
+        cancelNotification(requireContext(),product.id)
+    }
+
+
 }

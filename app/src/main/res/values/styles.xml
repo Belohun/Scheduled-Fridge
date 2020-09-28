@@ -1,34 +1,23 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-    </style>
-
-
-    <style name="Widget.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="hintTextAppearance">@style/TextAppearance.TextInputLayout.HintText</item>
-
-        <!--<item name="android:paddingBottom">8dp</item>-->
-        <item name="boxStrokeColor">@color/colorPrimary</item>
-    </style>
-
-    <style name="TextAppearance.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">
-        <item name="android:textColor">@color/colorPrimary</item>
-    </style>
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowContentTransitions">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/colorBackground</item>
     </style>
 
-    <style name="Widget.Fab" parent="Widget.Design.FloatingActionButton">
-    <item name="background">@color/colorPrimary</item>
-    <item name="tint">@color/background</item>
+
+
+
+    <style name="Widget.Fab" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="tint">@android:color/white</item>
 
 
 </style>
@@ -37,32 +26,37 @@
         <item name="fontFamily">@font/roboto</item>
         <item name="android:fontFamily">@font/roboto</item>
         <item name="android:textSize">48sp</item>
+        <item name="android:textColor">@color/colorText</item>
+
     </style>
 
     <style name="TextAppearance.MdcTypographyStyles.Headline5" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="fontFamily">@font/roboto</item>
         <item name="android:fontFamily">@font/roboto</item>
         <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/colorText</item>
     </style>
+
 
     <style name="TextAppearance.MdcTypographyStyles.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
         <item name="fontFamily">@font/roboto</item>
         <item name="android:fontFamily">@font/roboto</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorText</item>
     </style>
     <style name="TextAppearance.MdcTypographyStyles.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
         <item name="fontFamily">@font/roboto</item>
         <item name="android:fontFamily">@font/roboto</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorText</item>
 
     </style>
     <style name="TextAppearance.MdcTypographyStyles.Subtitle3" parent="TextAppearance.MaterialComponents.Subtitle2">
         <item name="fontFamily">@font/roboto</item>
         <item name="android:fontFamily">@font/roboto</item>
         <item name="android:textSize">14sp</item>
-
-
+        <item name="android:textColor">@color/colorText</item>
     </style>
 </resources>

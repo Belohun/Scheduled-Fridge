@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.scheduledfridge"
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -34,10 +34,10 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.3.0-alpha01'
+    implementation 'com.google.android.material:material:1.3.0-alpha02'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'
@@ -95,4 +95,8 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 // RectckerVuewSwoueDecirator
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
+    //gSon
+    implementation 'com.google.code.gson:gson:2.8.5'
+    //MPAndroidCHart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

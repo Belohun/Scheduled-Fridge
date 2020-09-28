@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/colorText"
+        android:hint="@string/select_day">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="@color/colorBackground"
+            android:textColor="@color/colorText"
+            android:id="@+id/settings_add_day_AutoCompleteTextView"
+            android:inputType="none"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="4dp">
+
+        <Button
+            android:id="@+id/settings_add_day_btn_add"
+            android:elevation="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textColor="@android:color/white"
+            android:text="@string/Add"/>
+        <Button
+            android:id="@+id/settings_add_day_btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_marginEnd="12dp"
+            android:layout_toStartOf="@id/settings_add_day_btn_add"
+            android:text="@string/Cancel"/>
+
+
+    </RelativeLayout>
+</LinearLayout>
